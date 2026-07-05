@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DesktopIcon from './DesktopIcon';
 import Dock from './Dock'; // Windows-style taskbar
@@ -45,6 +45,56 @@ export default function Desktop() {
       return [...prev, id];
     });
   }, []);
+
+  // 窗口拖动
+  const [windowPositions, setWindowPositions] = useState<Record<string, { x: number; y: number }>>({});
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const dragStartRef = useRef<{ startMouseX: number; startMouseY: number; startWindowX: number; startWindowY: number } | null>(null);
+
+  const handleTitleMouseDown = useCallback((e: React.MouseEvent, windowId: string) => {
+    if (e.button !== 0) return;
+    const windowEl = (e.currentTarget as HTMLElement).closest('.window-container') as HTMLElement;
+    if (!windowEl) return;
+    const parentEl = windowEl.offsetParent as HTMLElement | null;
+    const windowRect = windowEl.getBoundingClientRect();
+    const parentRect = parentEl ? parentEl.getBoundingClientRect() : { left: 0, top: 0 };
+    // 用相对父容器的位置（viewport 坐标相减），避免切换定位方式时窗口跳动
+    const relX = windowRect.left - parentRect.left;
+    const relY = windowRect.top - parentRect.top;
+    setWindowPositions((prev) => {
+      if (prev[windowId]) return prev;
+      return { ...prev, [windowId]: { x: relX, y: relY } };
+    });
+    dragStartRef.current = {
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startWindowX: relX,
+      startWindowY: relY,
+    };
+    setDraggingId(windowId);
+    e.preventDefault();
+  }, []);
+
+  useEffect(() => {
+    if (!draggingId) return;
+    const onMouseMove = (e: MouseEvent) => {
+      if (!dragStartRef.current) return;
+      const { startMouseX, startMouseY, startWindowX, startWindowY } = dragStartRef.current;
+      const dx = e.clientX - startMouseX;
+      const dy = e.clientY - startMouseY;
+      setWindowPositions((prev) => ({
+        ...prev,
+        [draggingId]: { x: startWindowX + dx, y: startWindowY + dy },
+      }));
+    };
+    const onMouseUp = () => setDraggingId(null);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [draggingId]);
 
   const getIconLabel = (id: string): string => {
     const allIcons = [...leftIcons, ...rightIcons];
@@ -98,14 +148,13 @@ export default function Desktop() {
         {openWindows.filter((id) => !minimizedWindows.includes(id)).map((windowId, index) => (
           <motion.div
             key={windowId}
-            className="absolute bg-white rounded-lg shadow-2xl border border-gray-300 overflow-hidden z-30"
+            className="absolute bg-white rounded-lg shadow-2xl border border-gray-300 overflow-hidden z-30 window-container"
             style={{
               width: '600px',
               height: '500px',
-              left: '50%',
-              top: '50%',
-              marginLeft: '-300px',
-              marginTop: '-250px',
+              ...(windowPositions[windowId]
+                ? { left: `${windowPositions[windowId].x}px`, top: `${windowPositions[windowId].y}px`, marginLeft: 0, marginTop: 0 }
+                : { left: '50%', top: '50%', marginLeft: '-300px', marginTop: '-250px' }),
             }}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -113,7 +162,11 @@ export default function Desktop() {
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           >
             {/* Window title bar - Windows 11 style */}
-            <div className="flex items-center justify-between h-9 px-2 bg-white border-b border-gray-200">
+            <div
+              className="flex items-center justify-between h-9 px-2 bg-white border-b border-gray-200"
+              onMouseDown={(e) => handleTitleMouseDown(e, windowId)}
+              style={{ cursor: draggingId === windowId ? 'grabbing' : 'grab' }}
+            >
               {/* Left: icon + title */}
               <div className="flex items-center gap-2 px-1 min-w-0">
                 <div className="w-3.5 h-3.5 bg-blue-500 rounded-sm flex-shrink-0" />
