@@ -79,10 +79,12 @@ export default function Desktop() {
             key={windowId}
             className="absolute bg-white rounded-lg shadow-2xl border border-gray-300 overflow-hidden z-30"
             style={{
-              width: '400px',
-              height: '300px',
-              left: `${100 + index * 40}px`,
-              top: `${80 + index * 40}px`,
+              width: '600px',
+              height: '500px',
+              left: '50%',
+              top: '50%',
+              marginLeft: '-300px',
+              marginTop: '-250px',
             }}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
