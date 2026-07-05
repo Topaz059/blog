@@ -145,7 +145,7 @@ export default function Desktop() {
 
       {/* Open windows (simulated) */}
       <AnimatePresence>
-        {openWindows.filter((id) => !minimizedWindows.includes(id)).map((windowId, index) => (
+        {openWindows.filter((id) => !minimizedWindows.includes(id)).map((windowId) => (
           <motion.div
             key={windowId}
             className="absolute bg-white rounded-lg shadow-2xl border border-gray-300 overflow-hidden z-30 window-container"

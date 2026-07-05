@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { DesktopIconData } from '@/lib/constants';
 import {
   FileIcon, FolderIcon, TrashIcon, SignupIcon, PricingIcon,
-  DemoIcon, DocsIcon, EmailIcon, QuestionIcon, ChartIcon,
+  DemoIcon, DocsIcon, EmailIcon, QuestionIcon,
   ChangelogIcon, HandbookIcon, StoreIcon, WorkIcon, SwitchModeIcon, ProductOSIcon, GitHubIcon,
 } from './icons';
 
