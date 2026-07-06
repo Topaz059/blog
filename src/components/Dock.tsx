@@ -289,7 +289,7 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
         </div>
 
         {/* Network */}
-        <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-black/5 transition-colors">
+        <button title="网络" className="flex items-center justify-center w-8 h-8 rounded hover:bg-black/5 transition-colors">
           <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M 3.5 12.1 A 10 10 0 0 1 20.5 12.1" />
             <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" />
@@ -362,7 +362,7 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
         </div>
 
         {/* Clock */}
-        <button className="flex flex-col items-center justify-center px-2 h-8 rounded hover:bg-black/5 transition-colors text-gray-700 text-xs leading-tight">
+        <button title="时间" className="flex flex-col items-center justify-center px-2 h-8 rounded hover:bg-black/5 transition-colors text-gray-700 text-xs leading-tight">
           <span>{timeStr}</span>
           <span className="text-[10px] text-gray-400">{dateStr}</span>
         </button>
