@@ -10,9 +10,9 @@ export interface DesktopIconData {
 export const leftIcons: DesktopIconData[] = [
   { id: 'signup', label: '文章', column: 'left' },
   { id: 'product-os', label: '随笔', column: 'left' },
-  { id: 'switch-mode', label: '项目', column: 'left' },
-  { id: 'pricing', label: '关于', column: 'left' },
   { id: 'customers', label: '友链', column: 'left' },
+  { id: 'pricing', label: '关于', column: 'left' },
+  { id: 'switch-mode', label: '项目', column: 'left' },
 ];
 
 export const rightIcons: DesktopIconData[] = [
@@ -25,7 +25,7 @@ export const rightIcons: DesktopIconData[] = [
 export const menuLinks = [
   { label: '文章', href: '#', iconId: 'signup' },
   { label: '随笔', href: '#', iconId: 'product-os' },
-  { label: '项目', href: '#', iconId: 'switch-mode' },
-  { label: '关于', href: '#', iconId: 'pricing' },
   { label: '友链', href: '#', iconId: 'customers' },
+  { label: '关于', href: '#', iconId: 'pricing' },
+  { label: '项目', href: '#', iconId: 'switch-mode' },
 ];
