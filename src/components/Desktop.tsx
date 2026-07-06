@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DesktopIcon from './DesktopIcon';
 import Dock from './Dock'; // Windows-style taskbar
@@ -8,7 +8,11 @@ import { leftIcons, rightIcons } from '@/lib/constants';
 
 const allIcons = [...leftIcons, ...rightIcons];
 
-export default function Desktop() {
+export interface DesktopHandle {
+  openIcon: (id: string) => void;
+}
+
+const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [openWindows, setOpenWindows] = useState<string[]>([]);
   const [minimizedWindows, setMinimizedWindows] = useState<string[]>([]);
@@ -23,6 +27,10 @@ export default function Desktop() {
     setOpenWindows((prev) => (prev.includes(id) ? prev : [...prev, id]));
     setMinimizedWindows((prev) => prev.filter((w) => w !== id));
   }, []);
+
+  useImperativeHandle(ref, () => ({
+    openIcon: handleIconOpen,
+  }), [handleIconOpen]);
 
   const closeWindow = useCallback((id: string) => {
     setOpenWindows((prev) => prev.filter((w) => w !== id));
@@ -222,4 +230,7 @@ export default function Desktop() {
       />
     </div>
   );
-}
+});
+
+Desktop.displayName = 'Desktop';
+export default Desktop;

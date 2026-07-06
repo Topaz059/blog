@@ -4,7 +4,11 @@ import React from 'react';
 import { PostHogLogo } from './icons';
 import { menuLinks } from '@/lib/constants';
 
-export default function MenuBar() {
+interface MenuBarProps {
+  onNavigate?: (iconId: string) => void;
+}
+
+export default function MenuBar({ onNavigate }: MenuBarProps) {
   return (
     <header className="fixed top-0 left-0 right-0 h-12 z-50 flex items-center px-4 select-none backdrop-blur border-b border-gray-200" style={{ background: 'rgba(232, 234, 240, 0.9)' }}>
       {/* Left: Logo */}
@@ -19,7 +23,13 @@ export default function MenuBar() {
           <a
             key={link.label}
             href={link.href}
-            className="text-gray-600 hover:text-gray-900 px-3 py-1 text-sm rounded transition-colors hover:bg-gray-100"
+            onClick={(e) => {
+              if (onNavigate && link.iconId) {
+                e.preventDefault();
+                onNavigate(link.iconId);
+              }
+            }}
+            className="text-gray-600 hover:text-gray-900 px-3 py-1 text-sm rounded transition-colors hover:bg-gray-100 cursor-pointer"
           >
             {link.label}
           </a>

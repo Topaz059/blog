@@ -26,10 +26,10 @@ export const rightIcons: DesktopIconData[] = [
 ];
 
 export const menuLinks = [
-  { label: '首页', href: '#' },
-  { label: '文章', href: '#' },
-  { label: '随笔', href: '#' },
-  { label: '项目', href: '#' },
-  { label: '关于', href: '#' },
-  { label: '友链', href: '#' },
+  { label: '首页', href: '#', iconId: 'home' },
+  { label: '文章', href: '#', iconId: 'signup' },
+  { label: '随笔', href: '#', iconId: 'product-os' },
+  { label: '项目', href: '#', iconId: 'switch-mode' },
+  { label: '关于', href: '#', iconId: 'pricing' },
+  { label: '友链', href: '#', iconId: 'customers' },
 ];
