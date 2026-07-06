@@ -124,16 +124,6 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
         )}
       </div>
 
-      {/* Task View */}
-      <button className="flex items-center justify-center w-10 h-8 rounded-md hover:bg-black/5 transition-colors mr-1">
-        <svg className="w-4 h-4 text-gray-500" viewBox="0 0 16 16" fill="currentColor">
-          <rect x="1" y="1" width="6" height="5" rx="0.5" />
-          <rect x="9" y="1" width="6" height="5" rx="0.5" />
-          <rect x="1" y="8" width="6" height="5" rx="0.5" />
-          <rect x="9" y="8" width="6" height="5" rx="0.5" />
-        </svg>
-      </button>
-
       {/* Divider */}
       <div className="w-px h-6 bg-black/10 mx-1" />
 
@@ -221,7 +211,7 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               >
                 <div className="p-2">
-                  <div className="grid grid-cols-5 gap-1 h-[104px]">
+                  <div className="grid grid-cols-5 grid-rows-3 gap-1 h-[104px] overflow-hidden">
                     {/* Bluetooth */}
                     <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="蓝牙">
                       <svg className="w-4 h-4 text-blue-600 group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -253,6 +243,24 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
                         <path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/>
                       </svg>
                     </button>
+                    {/* Open windows */}
+                    {openWindows.map((appId) => {
+                      const Icon = iconMap[appId];
+                      if (!Icon) return null;
+                      return (
+                        <button
+                          key={appId}
+                          onClick={() => {
+                            onTaskbarClick(appId);
+                            setIsTrayOverflowOpen(false);
+                          }}
+                          className="flex items-center justify-center w-8 h-8 rounded hover:bg-blue-500 hover:text-white transition-colors group"
+                          title={getIconLabel(appId)}
+                        >
+                          <Icon className="w-4 h-4 group-hover:text-white" />
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </motion.div>
