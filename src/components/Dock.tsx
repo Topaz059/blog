@@ -349,6 +349,7 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
                       height: '80px',
                       writingMode: 'vertical-lr' as any,
                       WebkitAppearance: 'slider-vertical' as any,
+                      transform: 'rotate(180deg)',
                     }}
                   />
                   <span className="text-[10px] text-gray-600 font-medium">{volume}</span>
