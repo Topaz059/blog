@@ -17,7 +17,7 @@ export const leftIcons: DesktopIconData[] = [
 ];
 
 export const rightIcons: DesktopIconData[] = [
-  { id: 'why', label: 'GitHub', column: 'right' },
+  { id: 'why', label: 'GitHub', column: 'right', href: 'https://github.com/yaoshi1103', isExternal: true },
   { id: 'changelog', label: 'Changelog', column: 'right' },
   { id: 'handbook', label: 'Company handbook', column: 'right' },
   { id: 'store', label: 'Store', column: 'right' },

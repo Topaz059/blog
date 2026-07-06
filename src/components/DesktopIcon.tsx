@@ -31,19 +31,17 @@ export const iconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = 
 interface DesktopIconProps {
   icon: DesktopIconData;
   isSelected: boolean;
-  onClick: (id: string) => void;
-  onDoubleClick: (id: string) => void;
+  onOpen: (id: string) => void;
 }
 
-export default function DesktopIcon({ icon, isSelected, onClick, onDoubleClick }: DesktopIconProps) {
+export default function DesktopIcon({ icon, isSelected, onOpen }: DesktopIconProps) {
   const [isHovered, setIsHovered] = useState(false);
   const IconComponent = iconMap[icon.id] || FileIcon;
 
   return (
     <motion.div
       className={`desktop-icon flex flex-col items-center gap-1 cursor-pointer select-none ${isSelected ? 'selected' : ''}`}
-      onClick={() => onClick(icon.id)}
-      onDoubleClick={() => onDoubleClick(icon.id)}
+      onClick={() => onOpen(icon.id)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       whileHover={{ scale: 1.05 }}

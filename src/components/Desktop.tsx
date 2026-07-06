@@ -6,24 +6,21 @@ import DesktopIcon from './DesktopIcon';
 import Dock from './Dock'; // Windows-style taskbar
 import { leftIcons, rightIcons } from '@/lib/constants';
 
+const allIcons = [...leftIcons, ...rightIcons];
+
 export default function Desktop() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [openWindows, setOpenWindows] = useState<string[]>([]);
   const [minimizedWindows, setMinimizedWindows] = useState<string[]>([]);
 
-  const handleIconClick = useCallback((id: string) => {
-    setSelectedId((prev) => (prev === id ? null : id));
-  }, []);
-
-  const handleIconDoubleClick = useCallback((id: string) => {
-    setOpenWindows((prev) => {
-      if (!prev.includes(id)) {
-        // 没打开 → 打开
-        return [...prev, id];
-      }
-      return prev;
-    });
-    // 如果已打开但最小化 → 恢复显示
+  const handleIconOpen = useCallback((id: string) => {
+    setSelectedId(id);
+    const iconData = allIcons.find((i) => i.id === id);
+    if (iconData?.href) {
+      window.open(iconData.href, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    setOpenWindows((prev) => (prev.includes(id) ? prev : [...prev, id]));
     setMinimizedWindows((prev) => prev.filter((w) => w !== id));
   }, []);
 
@@ -97,7 +94,6 @@ export default function Desktop() {
   }, [draggingId]);
 
   const getIconLabel = (id: string): string => {
-    const allIcons = [...leftIcons, ...rightIcons];
     const found = allIcons.find((i) => i.id === id);
     return found?.label || id;
   };
@@ -124,8 +120,7 @@ export default function Desktop() {
             key={icon.id}
             icon={icon}
             isSelected={selectedId === icon.id}
-            onClick={handleIconClick}
-            onDoubleClick={handleIconDoubleClick}
+            onOpen={handleIconOpen}
           />
         ))}
       </div>
@@ -137,8 +132,7 @@ export default function Desktop() {
             key={icon.id}
             icon={icon}
             isSelected={selectedId === icon.id}
-            onClick={handleIconClick}
-            onDoubleClick={handleIconDoubleClick}
+            onOpen={handleIconOpen}
           />
         ))}
       </div>
