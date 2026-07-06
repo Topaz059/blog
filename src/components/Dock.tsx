@@ -209,8 +209,8 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
                 className="absolute bottom-full mb-1 z-50 rounded-md shadow-lg border border-gray-300 overflow-hidden"
                 style={{
                   left: '50%',
-                  width: '172px',
-                  marginLeft: '-86px',
+                  width: '192px',
+                  marginLeft: '-96px',
                   background: 'rgba(240, 240, 245, 0.95)',
                   backdropFilter: 'blur(12px)',
                   WebkitBackdropFilter: 'blur(12px)',
@@ -220,36 +220,36 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
                 exit={{ opacity: 0, y: 10, scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               >
-                <div className="p-3">
-                  <div className="grid grid-cols-3 gap-2">
+                <div className="p-2">
+                  <div className="grid grid-cols-5 gap-1 h-[104px]">
                     {/* Bluetooth */}
-                    <button className="flex items-center justify-center w-11 h-11 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="蓝牙">
-                      <svg className="w-5 h-5 text-blue-600 group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="蓝牙">
+                      <svg className="w-4 h-4 text-blue-600 group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M17.71 7.71L12 2h-1v4.29L6.29 1.59 5 2.88 11.12 9 5 15.12l1.29 1.29L11 17.71V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/>
                       </svg>
                     </button>
                     {/* Battery */}
-                    <button className="flex items-center justify-center w-11 h-11 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="电池">
-                      <svg className="w-5 h-5 text-gray-600 group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="电池">
+                      <svg className="w-4 h-4 text-gray-600 group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M2 8v8h16V8H2zm2 2h12v4H4v-4z"/>
                         <rect x="19" y="10" width="2" height="4" rx="0.5" fill="currentColor"/>
                       </svg>
                     </button>
                     {/* Windows Update */}
-                    <button className="flex items-center justify-center w-11 h-11 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="Windows 更新">
-                      <svg className="w-5 h-5 text-blue-500 group-hover:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="Windows 更新">
+                      <svg className="w-4 h-4 text-blue-500 group-hover:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 12a8 8 0 018-8 8 8 0 016 3m2-3v3h-3M20 12a8 8 0 01-8 8 8 8 0 01-6-3m-2 3v-3h3"/>
                       </svg>
                     </button>
                     {/* OneDrive */}
-                    <button className="flex items-center justify-center w-11 h-11 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="OneDrive">
-                      <svg className="w-5 h-5 text-blue-500 group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="OneDrive">
+                      <svg className="w-4 h-4 text-blue-500 group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6.5 18a4.5 4.5 0 010-9 5.5 5.5 0 0110.4 1.5A3.5 3.5 0 0117 18H6.5z"/>
                       </svg>
                     </button>
                     {/* Location */}
-                    <button className="flex items-center justify-center w-11 h-11 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="定位">
-                      <svg className="w-5 h-5 text-red-500 group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-blue-500 hover:text-white transition-colors group" title="定位">
+                      <svg className="w-4 h-4 text-red-500 group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/>
                       </svg>
                     </button>
