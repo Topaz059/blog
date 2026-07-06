@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { iconMap } from './DesktopIcon';
 import { leftIcons } from '@/lib/constants';
+import StartMenu from './StartMenu';
 
 interface TaskbarProps {
   openWindows: string[];
@@ -17,6 +18,7 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
   const searchResults = searchQuery
     ? leftIcons.filter(icon => icon.label.includes(searchQuery))
@@ -45,7 +47,12 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
       }}
     >
       {/* Start Button */}
-      <button className="flex items-center justify-center w-10 h-8 rounded-md hover:bg-black/5 transition-colors mr-1">
+      <button
+        onMouseDown={(e) => e.stopPropagation()}
+        onClick={() => setIsStartMenuOpen((prev) => !prev)}
+        className={`flex items-center justify-center w-10 h-8 rounded-md transition-colors mr-1 ${isStartMenuOpen ? 'bg-black/10' : 'hover:bg-black/5'}`}
+        title="开始"
+      >
         <svg viewBox="0 0 16 16" className="w-4 h-4" fill="#333">
           <path d="M1 2l6-1v6H1V2zm0 7h6v6l-6-1V9zm7-8l7-1v6H8V1zm0 7h7v6l-7-1V8z" />
         </svg>
@@ -193,6 +200,16 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
         {/* Show desktop */}
         <button className="w-1.5 h-8 hover:bg-black/5 transition-colors rounded-r-sm" />
       </div>
+
+      {/* Start Menu */}
+      <AnimatePresence>
+        {isStartMenuOpen && (
+          <StartMenu
+            onClose={() => setIsStartMenuOpen(false)}
+            onOpen={onOpen}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
