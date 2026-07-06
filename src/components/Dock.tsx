@@ -290,9 +290,11 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
 
         {/* Network */}
         <button className="flex items-center justify-center w-8 h-8 rounded hover:bg-black/5 transition-colors">
-          <svg className="w-3.5 h-3.5 text-gray-500" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 1a7 7 0 00-7 7h1.5A5.5 5.5 0 018 2.5V1zM8 2.5A5.5 5.5 0 012.5 8H4a4 4 0 014-4V2.5zM8 4a4 4 0 00-4 4h1.5A2.5 2.5 0 018 5.5V4zM8 5.5A2.5 2.5 0 005.5 8H7a1 1 0 011-1V5.5z" />
-            <circle cx="8" cy="8" r="1.5" />
+          <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M 3.5 12.1 A 10 10 0 0 1 20.5 12.1" />
+            <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" />
+            <path d="M 8.5 15.1 A 4 4 0 0 1 15.5 15.1" />
+            <circle cx="12" cy="17.1" r="1.5" fill="currentColor" stroke="none" />
           </svg>
         </button>
 
