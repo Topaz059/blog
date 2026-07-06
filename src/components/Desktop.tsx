@@ -118,7 +118,7 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
         playsInline
         preload="auto"
       >
-        <source src="/bizhi.mp4" type="video/mp4" />
+        <source src="https://github.com/yaoshi1103/blog/releases/download/v1.0.0/redpandacompress_bizhi.mp4" type="video/mp4" />
       </video>
 
       {/* Center Illustration removed */}

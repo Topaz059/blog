@@ -34,3 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 大文件：视频壁纸仅用于本地展示，远端通过 GitHub Release 加载
+/public/bizhi.mp4
+/public/bizhi_compressed_stream_0.mp4
+/public/redpandacompress_bizhi.mp4
