@@ -1,20 +1,36 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { iconMap } from './DesktopIcon';
+import { leftIcons } from '@/lib/constants';
 
 interface TaskbarProps {
   openWindows: string[];
   minimizedWindows: string[];
   onTaskbarClick: (id: string) => void;
   getIconLabel: (id: string) => string;
+  onOpen: (id: string) => void;
 }
 
-export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick, getIconLabel }: TaskbarProps) {
+export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick, getIconLabel, onOpen }: TaskbarProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
-  const now = new Date();
+  const searchResults = searchQuery
+    ? leftIcons.filter(icon => icon.label.includes(searchQuery))
+    : [];
+
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
   const dateStr = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' });
 
@@ -36,12 +52,51 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
       </button>
 
       {/* Search */}
-      <button className="flex items-center gap-2 h-8 px-3 rounded-md bg-black/5 hover:bg-black/10 transition-colors text-gray-500 text-xs mr-4">
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <span className="hidden sm:inline">Type here to search</span>
-      </button>
+      <div className="relative mr-4">
+        <div className={`flex items-center gap-2 h-8 px-3 rounded-md transition-colors text-xs ${isSearchFocused ? 'bg-white ring-2 ring-blue-400 text-gray-700' : 'bg-black/5 hover:bg-black/10 text-gray-500'}`}>
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setIsSearchFocused(true)}
+            onBlur={() => setIsSearchFocused(false)}
+            placeholder="Type here to search"
+            className="bg-transparent outline-none text-gray-700 placeholder-gray-400 w-28"
+          />
+        </div>
+        {/* 搜索结果下拉列表（向上弹出） */}
+        {isSearchFocused && searchQuery && (
+          <div className="absolute bottom-full left-0 mb-2 bg-white rounded-md shadow-lg border border-gray-200 py-1 min-w-[180px] z-50">
+            {searchResults.length > 0 ? (
+              searchResults.map(icon => {
+                const Icon = iconMap[icon.id];
+                return (
+                  <button
+                    key={icon.id}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      onOpen(icon.id);
+                      setSearchQuery('');
+                      setIsSearchFocused(false);
+                    }}
+                    className="flex items-center gap-2 w-full px-3 py-2 hover:bg-blue-50 transition-colors text-left"
+                  >
+                    {Icon && <Icon className="w-4 h-4" />}
+                    <span className="text-xs text-gray-700">{icon.label}</span>
+                  </button>
+                );
+              })
+            ) : (
+              <div className="px-3 py-2">
+                <span className="text-xs text-gray-400">无匹配结果</span>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Task View */}
       <button className="flex items-center justify-center w-10 h-10 rounded-md hover:bg-black/5 transition-colors mr-1">

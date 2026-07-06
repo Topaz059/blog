@@ -260,6 +260,7 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
         minimizedWindows={minimizedWindows}
         onTaskbarClick={handleTaskbarClick}
         getIconLabel={getIconLabel}
+        onOpen={handleIconOpen}
       />
     </div>
   );
