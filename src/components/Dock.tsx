@@ -384,7 +384,7 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
         </div>
 
         {/* Clock + Calendar */}
-        <div className="relative">
+        <div>
           <button
             onMouseDown={(e) => e.stopPropagation()}
             onClick={() => setIsCalendarOpen((prev) => !prev)}
