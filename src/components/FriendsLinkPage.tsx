@@ -73,7 +73,7 @@ export default function FriendsLinkPage() {
     <div
       className="friends-scroll h-full overflow-y-auto"
       style={{
-        background: 'linear-gradient(160deg, #e3f6e9 0%, #d0ebd8 50%, #c3e0cb 100%)',
+        background: 'radial-gradient(at 40% 20%, #1E90FF 0px, transparent 50%), radial-gradient(at 80% 50%, #00BFFF 0px, transparent 50%), radial-gradient(at 20% 80%, #1E90FF 0px, transparent 50%), radial-gradient(at 60% 100%, #00BFFF 0px, transparent 50%), linear-gradient(135deg, #0a3d6b, #1e5c8a)',
         padding: '12px 0',
       }}
     >
