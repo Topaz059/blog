@@ -77,6 +77,12 @@ export default function FriendsLinkPage() {
         padding: '12px 0',
       }}
     >
+      <div style={{ textAlign: 'center', marginBottom: '20px', paddingTop: '12px' }}>
+        <h2 style={{ color: 'white', fontSize: 'clamp(18px, 2.5cqw, 26px)', fontWeight: 700, letterSpacing: '0.08em' }}>
+          友链
+        </h2>
+        <div style={{ width: '36px', height: '3px', background: '#1E90FF', margin: '8px auto 0', borderRadius: '2px' }} />
+      </div>
       <div
         className="grid grid-cols-3 mx-auto"
         style={{

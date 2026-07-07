@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DesktopIcon from './DesktopIcon';
 import Dock from './Dock'; // Windows-style taskbar
 import FriendsLinkPage from './FriendsLinkPage';
+import EmailPage from './EmailPage';
 import { leftIcons, rightIcons } from '@/lib/constants';
 
 const allIcons = [...leftIcons, ...rightIcons];
@@ -250,6 +251,8 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
             <div className="flex-1 min-h-0 overflow-hidden">
               {windowId === 'customers' ? (
                 <FriendsLinkPage />
+              ) : windowId === 'email' ? (
+                <EmailPage />
               ) : (
                 <div className="h-full overflow-y-auto p-4 text-sm text-gray-500">
                   <p>This is a placeholder for the <strong>{getIconLabel(windowId)}</strong> page.</p>
