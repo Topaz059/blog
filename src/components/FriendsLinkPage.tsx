@@ -22,23 +22,44 @@ function FriendCard({ friend, index }: { friend: FriendLink; index: number }) {
       transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
       whileHover={{ scale: 1.03, transition: { duration: 0.15 } }}
       onClick={handleClick}
-      className="bg-white/70 backdrop-blur-sm rounded-xl shadow-sm border border-white/40 p-2.5 cursor-pointer hover:bg-white/85 hover:shadow-md transition-colors"
+      className="bg-white/70 backdrop-blur-sm rounded-xl shadow-sm border border-white/40 cursor-pointer hover:bg-white/85 hover:shadow-md transition-colors"
+      style={{
+        padding: 'clamp(10px, 1.6cqw, 22px)',
+      }}
     >
-      <div className="flex gap-2.5">
+      <div className="flex" style={{ gap: 'clamp(8px, 1.1cqw, 16px)' }}>
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm"
-          style={{ background: getAvatarGradient(friend.name) }}
+          className="rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 shadow-sm"
+          style={{
+            background: getAvatarGradient(friend.name),
+            width: 'clamp(30px, 4.2cqw, 60px)',
+            height: 'clamp(30px, 4.2cqw, 60px)',
+            fontSize: 'clamp(13px, 2.1cqw, 28px)',
+          }}
         >
           {getAvatarInitial(friend.name)}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-xs font-bold text-gray-800 truncate leading-tight">
+          <h3
+            className="font-bold text-gray-800 truncate leading-tight"
+            style={{ fontSize: 'clamp(12px, 1.85cqw, 19px)' }}
+          >
             {friend.name}
           </h3>
-          <p className="text-[10px] text-gray-400 truncate leading-tight mt-0.5">
+          <p
+            className="text-gray-400 truncate leading-tight"
+            style={{ fontSize: 'clamp(10px, 1.35cqw, 14px)', marginTop: '2px' }}
+          >
             {getDisplayUrl(friend.url)}
           </p>
-          <p className="text-[10px] text-gray-500 leading-snug mt-1.5" title={friend.description}>
+          <p
+            className="text-gray-500 leading-snug"
+            style={{
+              fontSize: 'clamp(10px, 1.35cqw, 14px)',
+              marginTop: 'clamp(4px, 0.7cqw, 10px)',
+            }}
+            title={friend.description}
+          >
             {friend.description}
           </p>
         </div>
@@ -55,7 +76,15 @@ export default function FriendsLinkPage() {
         background: 'linear-gradient(160deg, #e3f6e9 0%, #d0ebd8 50%, #c3e0cb 100%)',
       }}
     >
-      <div className="grid grid-cols-3 gap-3">
+      <div
+        className="grid grid-cols-3 mx-auto"
+        style={{
+          containerType: 'inline-size',
+          width: '100%',
+          maxWidth: '1100px',
+          gap: 'clamp(10px, 1.3cqw, 22px)',
+        }}
+      >
         {friendsData.map((friend, index) => (
           <FriendCard key={friend.id} friend={friend} index={index} />
         ))}
