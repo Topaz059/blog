@@ -384,7 +384,7 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
         </div>
 
         {/* Clock + Calendar */}
-        <div className="relative">
+        <div>
           <button
             onMouseDown={(e) => e.stopPropagation()}
             onClick={() => setIsCalendarOpen((prev) => !prev)}
@@ -400,7 +400,7 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
             {isCalendarOpen && (
               <motion.div
                 ref={calendarRef}
-                className="absolute bottom-full right-0 mb-1 z-50 rounded-md shadow-lg border border-gray-300 overflow-hidden"
+                className="absolute bottom-full -right-1 mb-1 z-50 rounded-md shadow-lg border border-gray-300 overflow-hidden"
                 style={{
                   width: '280px',
                   background: 'rgba(240, 240, 245, 0.95)',
