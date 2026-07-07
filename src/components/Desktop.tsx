@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect, useRef, forwardRef, useImperat
 import { motion, AnimatePresence } from 'framer-motion';
 import DesktopIcon from './DesktopIcon';
 import Dock from './Dock'; // Windows-style taskbar
+import FriendsLinkPage from './FriendsLinkPage';
 import { leftIcons, rightIcons } from '@/lib/constants';
 
 const allIcons = [...leftIcons, ...rightIcons];
@@ -175,16 +176,16 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
         {openWindows.filter((id) => !minimizedWindows.includes(id)).map((windowId) => (
           <motion.div
             key={windowId}
-            className="absolute bg-white rounded-lg shadow-2xl border border-gray-300 overflow-hidden z-30 window-container"
+            className="absolute bg-white rounded-lg shadow-2xl border border-gray-300 overflow-hidden z-30 window-container flex flex-col"
             style={
               maximizedWindows.includes(windowId)
                 ? { left: '0', top: '0', right: '0', bottom: '0', width: 'auto', height: 'auto', marginLeft: 0, marginTop: 0, borderRadius: 0 }
                 : {
-                    width: '600px',
-                    height: '500px',
+                    width: '700px',
+                    height: '600px',
                     ...(windowPositions[windowId]
                       ? { left: `${windowPositions[windowId].x}px`, top: `${windowPositions[windowId].y}px`, marginLeft: 0, marginTop: 0 }
-                      : { left: '50%', top: '50%', marginLeft: '-300px', marginTop: '-250px' }),
+                      : { left: '50%', top: '50%', marginLeft: '-350px', marginTop: '-300px' }),
                   }
             }
             initial={{ scale: 0.8, opacity: 0 }}
@@ -194,7 +195,7 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
           >
             {/* Window title bar - Windows 11 style */}
             <div
-              className="flex items-center justify-between h-9 px-2 bg-white border-b border-gray-200"
+              className="flex items-center justify-between h-9 px-2 bg-white border-b border-gray-200 flex-shrink-0"
               onMouseDown={(e) => handleTitleMouseDown(e, windowId)}
               style={{ cursor: draggingId === windowId ? 'grabbing' : 'grab' }}
             >
@@ -246,9 +247,15 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
               </div>
             </div>
             {/* Window content */}
-            <div className="p-4 text-sm text-gray-500">
-              <p>This is a placeholder for the <strong>{getIconLabel(windowId)}</strong> page.</p>
-              <p className="mt-2">Content will be added later.</p>
+            <div className="flex-1 min-h-0 overflow-hidden">
+              {windowId === 'customers' ? (
+                <FriendsLinkPage />
+              ) : (
+                <div className="h-full overflow-y-auto p-4 text-sm text-gray-500">
+                  <p>This is a placeholder for the <strong>{getIconLabel(windowId)}</strong> page.</p>
+                  <p className="mt-2">Content will be added later.</p>
+                </div>
+              )}
             </div>
           </motion.div>
         ))}

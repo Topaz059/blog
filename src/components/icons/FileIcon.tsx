@@ -209,3 +209,40 @@ export const ArticleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <line x1="15" y1="38" x2="28" y2="38" stroke="#4a90d9" strokeWidth="1.6" />
   </svg>
 );
+
+// FriendLink icon candidate A - Windows favorites star: folder + star (bookmarked links)
+export const FriendLinkA: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path d="M6 12 H18 L22 16 H42 V40 H6 Z" fill="white" stroke="#7a7a7a" strokeWidth="1.2" strokeLinejoin="round" />
+    <path d="M24 19 L26 24 L31 24.5 L27 28 L28 33 L24 30.5 L20 33 L21 28 L17 24.5 L22 24 Z" fill="#4a90d9" />
+  </svg>
+);
+
+// FriendLink icon candidate B - Windows globe link: earth + chain link (web links)
+export const FriendLinkB: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <circle cx="22" cy="24" r="14" fill="white" stroke="#4a90d9" strokeWidth="1.6" />
+    <ellipse cx="22" cy="24" rx="6" ry="14" fill="none" stroke="#4a90d9" strokeWidth="1.2" />
+    <line x1="8" y1="24" x2="36" y2="24" stroke="#4a90d9" strokeWidth="1.2" />
+    <line x1="10" y1="17" x2="34" y2="17" stroke="#4a90d9" strokeWidth="1" opacity="0.7" />
+    <line x1="10" y1="31" x2="34" y2="31" stroke="#4a90d9" strokeWidth="1" opacity="0.7" />
+    {/* chain link */}
+    <path d="M36 28 L40 24 C42 22 45 22 47 24 C49 26 49 29 47 31 L43 35" fill="none" stroke="#4a90d9" strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M40 35 L36 39 C34 41 31 41 29 39 C27 37 27 34 29 32 L33 28" fill="none" stroke="#4a90d9" strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+);
+
+// FriendLink icon candidate C - Windows links folder: folder with globe + bookmarked rows
+export const FriendLinkC: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path d="M5 10 H18 L22 14 H43 V40 H5 Z" fill="white" stroke="#7a7a7a" strokeWidth="1.2" strokeLinejoin="round" />
+    {/* globe badge */}
+    <circle cx="16" cy="24" r="6" fill="#e6f0fa" stroke="#4a90d9" strokeWidth="1.3" />
+    <ellipse cx="16" cy="24" rx="2.5" ry="6" fill="none" stroke="#4a90d9" strokeWidth="0.9" />
+    <line x1="10" y1="24" x2="22" y2="24" stroke="#4a90d9" strokeWidth="0.9" />
+    {/* link rows */}
+    <line x1="26" y1="21" x2="40" y2="21" stroke="#4a90d9" strokeWidth="1.4" />
+    <line x1="26" y1="27" x2="38" y2="27" stroke="#4a90d9" strokeWidth="1.4" />
+    <line x1="26" y1="33" x2="36" y2="33" stroke="#4a90d9" strokeWidth="1.4" />
+  </svg>
+);
