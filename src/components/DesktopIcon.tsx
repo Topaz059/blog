@@ -19,6 +19,7 @@ export const iconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = 
   demo: DemoIcon,
   docs: DocsIcon,
   talk: EmailIcon,
+  email: EmailIcon,
   question: QuestionIcon,
   why: GitHubIcon,
   changelog: BilibiliIcon,

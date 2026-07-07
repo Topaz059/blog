@@ -70,10 +70,10 @@ export const DocsIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 // Email icon
 export const EmailIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <rect x="6" y="12" width="36" height="24" rx="3" fill="white" stroke="#555" strokeWidth="1.5" />
-    <path d="M6 12L24 28L42 12" stroke="#555" strokeWidth="1.5" fill="none" />
-    <path d="M6 36L20 22" stroke="#ccc" strokeWidth="1" />
-    <path d="M42 36L28 22" stroke="#ccc" strokeWidth="1" />
+    <rect x="4" y="12" width="40" height="26" rx="2" fill="white" stroke="#7a7a7a" strokeWidth="1.5" />
+    <path d="M4 12L24 28L44 12" stroke="#4a90d9" strokeWidth="2" fill="none" strokeLinejoin="round" strokeLinecap="butt" />
+    <path d="M4 38L18 24" stroke="#ccc" strokeWidth="1" />
+    <path d="M44 38L30 24" stroke="#ccc" strokeWidth="1" />
   </svg>
 );
 
