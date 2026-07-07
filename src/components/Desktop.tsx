@@ -195,9 +195,9 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
           >
             {/* Window title bar - Windows 11 style */}
             <div
-              className="flex items-center justify-between h-9 px-2 bg-white border-b border-gray-200 flex-shrink-0"
+              className="flex items-center justify-between h-9 px-2 backdrop-blur border-b border-gray-200 flex-shrink-0"
               onMouseDown={(e) => handleTitleMouseDown(e, windowId)}
-              style={{ cursor: draggingId === windowId ? 'grabbing' : 'grab' }}
+              style={{ cursor: draggingId === windowId ? 'grabbing' : 'grab', background: 'rgba(232, 234, 240, 0.9)' }}
             >
               {/* Left: icon + title */}
               <div className="flex items-center gap-2 px-1 min-w-0">
