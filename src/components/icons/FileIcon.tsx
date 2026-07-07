@@ -33,16 +33,6 @@ export const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
-// Signup icon - target/bullseye
-export const SignupIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <circle cx="24" cy="24" r="18" fill="white" stroke="#555" strokeWidth="2" />
-    <circle cx="24" cy="24" r="12" fill="white" stroke="#c84040" strokeWidth="2" />
-    <circle cx="24" cy="24" r="6" fill="#c84040" />
-    <circle cx="24" cy="24" r="2" fill="white" />
-  </svg>
-);
-
 // Pricing icon - calculator
 export const PricingIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -205,5 +195,17 @@ export const PostHogLogo: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <circle cx="15" cy="11" r="1.5" fill="#1a1a1a" />
     <ellipse cx="12" cy="15" rx="2" ry="1.5" fill="#1a1a1a" />
     <path d="M6 12L4 10M18 12L20 10M8 9L7 7M16 9L17 7" stroke="#1a1a1a" strokeWidth="1" />
+  </svg>
+);
+
+// Article icon - Windows Notepad .txt style: white page, folded corner, blue text lines
+export const ArticleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path d="M10 4 H30 L40 14 V44 H10 Z" fill="white" stroke="#7a7a7a" strokeWidth="1.2" strokeLinejoin="round" />
+    <path d="M30 4 V14 H40" fill="#dcdcdc" stroke="#7a7a7a" strokeWidth="1.2" strokeLinejoin="round" />
+    <line x1="15" y1="20" x2="35" y2="20" stroke="#4a90d9" strokeWidth="1.6" />
+    <line x1="15" y1="26" x2="35" y2="26" stroke="#4a90d9" strokeWidth="1.6" />
+    <line x1="15" y1="32" x2="35" y2="32" stroke="#4a90d9" strokeWidth="1.6" />
+    <line x1="15" y1="38" x2="28" y2="38" stroke="#4a90d9" strokeWidth="1.6" />
   </svg>
 );

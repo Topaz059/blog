@@ -2,7 +2,6 @@ export {
   FileIcon,
   FolderIcon,
   TrashIcon,
-  SignupIcon,
   PricingIcon,
   DemoIcon,
   DocsIcon,
@@ -19,4 +18,5 @@ export {
   ProductOSIcon,
   GitHubIcon,
   PostHogLogo,
+  ArticleIcon,
 } from './FileIcon';
