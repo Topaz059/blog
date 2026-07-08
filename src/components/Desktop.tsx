@@ -7,6 +7,7 @@ import Dock from './Dock'; // Windows-style taskbar
 import FriendsLinkPage from './FriendsLinkPage';
 import EmailPage from './EmailPage';
 import ThisPCPage from './ThisPCPage';
+import RecycleBinPage from './RecycleBinPage';
 import { iconMap } from './DesktopIcon';
 import { leftIcons, rightIcons } from '@/lib/constants';
 
@@ -269,6 +270,8 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
                 <EmailPage />
               ) : windowId === 'handbook' ? (
                 <ThisPCPage />
+              ) : windowId === 'trash' ? (
+                <RecycleBinPage />
               ) : (
                 <div className="h-full overflow-y-auto p-4 text-sm text-gray-500">
                   <p>This is a placeholder for the <strong>{getIconLabel(windowId)}</strong> page.</p>
