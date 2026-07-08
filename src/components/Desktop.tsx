@@ -239,16 +239,23 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
                     <path d="M0 5 H10" stroke="currentColor" strokeWidth="1" />
                   </svg>
                 </button>
-                {/* Maximize */}
+                {/* Maximize / Restore */}
                 <button
                   onClick={() => toggleMaximize(windowId)}
                   className="flex items-center justify-center w-11 h-full hover:bg-gray-200/70 transition-colors"
                   aria-label="Maximize"
                   title="Maximize"
                 >
-                  <svg className="w-2.5 h-2.5 text-gray-700" viewBox="0 0 10 10" fill="none">
-                    <rect x="0.5" y="0.5" width="9" height="9" stroke="currentColor" strokeWidth="1" fill="none" />
-                  </svg>
+                  {maximizedWindows.includes(windowId) ? (
+                    <svg className="w-2.5 h-2.5 text-gray-700" viewBox="0 0 10 10" fill="none">
+                      <rect x="0.5" y="2.5" width="6" height="6" stroke="currentColor" strokeWidth="1" fill="none" />
+                      <path d="M2.5 2.5 V0.5 H8.5 V6.5 H6.5" stroke="currentColor" strokeWidth="1" fill="none" strokeLinejoin="round" />
+                    </svg>
+                  ) : (
+                    <svg className="w-2.5 h-2.5 text-gray-700" viewBox="0 0 10 10" fill="none">
+                      <rect x="0.5" y="0.5" width="9" height="9" stroke="currentColor" strokeWidth="1" fill="none" />
+                    </svg>
+                  )}
                 </button>
                 {/* Close */}
                 <button
