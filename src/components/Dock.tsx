@@ -350,7 +350,6 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
                   <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" opacity="0.45" />
                   <path d="M 8.5 15.1 A 4 4 0 0 1 15.5 15.1" opacity="0.45" />
                   <circle cx="12" cy="17.1" r="1.5" fill="currentColor" stroke="none" opacity="0.45" />
-                  <line x1="4" y1="20" x2="20" y2="4" stroke="#d83b01" strokeWidth="2.2" />
                 </>
               )}
             </svg>
@@ -392,7 +391,6 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
                             <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" opacity="0.45" />
                             <path d="M 8.5 15.1 A 4 4 0 0 1 15.5 15.1" opacity="0.45" />
                             <circle cx="12" cy="17.1" r="1.5" fill="currentColor" stroke="none" opacity="0.45" />
-                            <line x1="4" y1="20" x2="20" y2="4" stroke="#d83b01" strokeWidth="2.2" />
                           </>
                         )}
                       </svg>
