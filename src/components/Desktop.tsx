@@ -9,6 +9,7 @@ import EmailPage from './EmailPage';
 import ThisPCPage from './ThisPCPage';
 import RecycleBinPage from './RecycleBinPage';
 import AboutPage from './AboutPage';
+import ArticlesPage from './ArticlesPage';
 import { iconMap } from './DesktopIcon';
 import { leftIcons, rightIcons } from '@/lib/constants';
 
@@ -282,6 +283,8 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
                 <RecycleBinPage />
               ) : windowId === 'pricing' ? (
                 <AboutPage />
+              ) : windowId === 'signup' ? (
+                <ArticlesPage />
               ) : (
                 <div className="h-full overflow-y-auto p-4 text-sm text-gray-500">
                   <p>This is a placeholder for the <strong>{getIconLabel(windowId)}</strong> page.</p>
