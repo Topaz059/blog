@@ -27,6 +27,9 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [calendarMonth, setCalendarMonth] = useState(() => new Date());
   const calendarRef = useRef<HTMLDivElement>(null);
+  const [isWifiOpen, setIsWifiOpen] = useState(false);
+  const [wifiOn, setWifiOn] = useState(true);
+  const wifiRef = useRef<HTMLDivElement>(null);
 
   const searchResults = searchQuery
     ? leftIcons.filter(icon => icon.label.includes(searchQuery))
@@ -91,6 +94,23 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
       document.removeEventListener('mousedown', handleClick);
     };
   }, [isCalendarOpen]);
+
+  // WiFi 面板：点击外部关闭
+  useEffect(() => {
+    if (!isWifiOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (wifiRef.current && !wifiRef.current.contains(e.target as Node)) {
+        setIsWifiOpen(false);
+      }
+    };
+    const timer = setTimeout(() => {
+      document.addEventListener('mousedown', handleClick);
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, [isWifiOpen]);
 
   const timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
   const dateStr = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' });
@@ -308,15 +328,131 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
           </AnimatePresence>
         </div>
 
-        {/* Network */}
-        <button title="网络" className="flex items-center justify-center w-8 h-8 rounded hover:bg-black/5 transition-colors">
-          <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M 3.5 12.1 A 10 10 0 0 1 20.5 12.1" />
-            <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" />
-            <path d="M 8.5 15.1 A 4 4 0 0 1 15.5 15.1" />
-            <circle cx="12" cy="17.1" r="1.5" fill="currentColor" stroke="none" />
-          </svg>
-        </button>
+        {/* Network / WiFi */}
+        <div className="relative">
+          <button
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={() => setIsWifiOpen((prev) => !prev)}
+            className={`flex items-center justify-center w-8 h-8 rounded transition-colors ${isWifiOpen ? 'bg-black/10' : 'hover:bg-black/5'}`}
+            title="网络"
+          >
+            <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              {wifiOn ? (
+                <>
+                  <path d="M 3.5 12.1 A 10 10 0 0 1 20.5 12.1" />
+                  <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" />
+                  <path d="M 8.5 15.1 A 4 4 0 0 1 15.5 15.1" />
+                  <circle cx="12" cy="17.1" r="1.5" fill="currentColor" stroke="none" />
+                </>
+              ) : (
+                <>
+                  <path d="M 3.5 12.1 A 10 10 0 0 1 20.5 12.1" opacity="0.45" />
+                  <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" opacity="0.45" />
+                  <path d="M 8.5 15.1 A 4 4 0 0 1 15.5 15.1" opacity="0.45" />
+                  <circle cx="12" cy="17.1" r="1.5" fill="currentColor" stroke="none" opacity="0.45" />
+                  <line x1="4" y1="20" x2="20" y2="4" stroke="#d83b01" strokeWidth="2.2" />
+                </>
+              )}
+            </svg>
+          </button>
+
+          {/* WiFi Popup */}
+          <AnimatePresence>
+            {isWifiOpen && (
+              <motion.div
+                ref={wifiRef}
+                className="absolute bottom-full left-1/2 mb-1 z-50 rounded-md shadow-lg border border-gray-300 overflow-hidden"
+                style={{
+                  marginLeft: '-120px',
+                  width: '240px',
+                  background: 'rgba(240, 240, 245, 0.95)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                }}
+                initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              >
+                <div className="p-3">
+                  {/* WiFi toggle row */}
+                  <div className="flex items-center justify-between py-1.5">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <svg className={`w-5 h-5 flex-shrink-0 ${wifiOn ? 'text-gray-700' : 'text-gray-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        {wifiOn ? (
+                          <>
+                            <path d="M 3.5 12.1 A 10 10 0 0 1 20.5 12.1" />
+                            <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" />
+                            <path d="M 8.5 15.1 A 4 4 0 0 1 15.5 15.1" />
+                            <circle cx="12" cy="17.1" r="1.5" fill="currentColor" stroke="none" />
+                          </>
+                        ) : (
+                          <>
+                            <path d="M 3.5 12.1 A 10 10 0 0 1 20.5 12.1" opacity="0.45" />
+                            <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" opacity="0.45" />
+                            <path d="M 8.5 15.1 A 4 4 0 0 1 15.5 15.1" opacity="0.45" />
+                            <circle cx="12" cy="17.1" r="1.5" fill="currentColor" stroke="none" opacity="0.45" />
+                            <line x1="4" y1="20" x2="20" y2="4" stroke="#d83b01" strokeWidth="2.2" />
+                          </>
+                        )}
+                      </svg>
+                      <div className="min-w-0">
+                        <div className="text-[12px] font-medium text-gray-800 truncate">WLAN</div>
+                        <div className="text-[10.5px] text-gray-500 truncate">{wifiOn ? '已连接 · Topaz-5G' : '未连接'}</div>
+                      </div>
+                    </div>
+                    {/* Toggle switch: off=white, on=blue */}
+                    <button
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onClick={() => setWifiOn((v) => !v)}
+                      role="switch"
+                      aria-checked={wifiOn}
+                      title={wifiOn ? '关闭 WLAN' : '打开 WLAN'}
+                      className={`relative flex-shrink-0 transition-colors duration-200 ${wifiOn ? 'bg-[#0078d4]' : 'bg-white border border-gray-300'}`}
+                      style={{ width: '38px', height: '20px', borderRadius: '10px' }}
+                    >
+                      <span
+                        className={`absolute top-0.5 block transition-all duration-200 ${wifiOn ? 'left-[20px] bg-white' : 'left-[2px] bg-gray-500'}`}
+                        style={{ width: '16px', height: '16px', borderRadius: '50%' }}
+                      />
+                    </button>
+                  </div>
+
+                  <div className="h-px bg-gray-300/50 my-1.5" />
+
+                  {/* Network list (cosmetic) */}
+                  <div className="space-y-0.5">
+                    {[
+                      { name: 'Topaz-5G', connected: true, strength: 3 },
+                      { name: 'ChinaNet-2.4G', connected: false, strength: 2 },
+                      { name: 'CMCC-Web', connected: false, strength: 1 },
+                    ].map((net) => (
+                      <div
+                        key={net.name}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        className={`flex items-center gap-2.5 px-1.5 py-1.5 rounded cursor-default ${wifiOn ? 'hover:bg-black/5' : 'opacity-40 cursor-not-allowed'}`}
+                      >
+                        <svg className="w-3.5 h-3.5 text-gray-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                          {/* strength 3: 三条弧线全显示；2: 删最外层；1: 只剩最内层 */}
+                          {net.strength >= 3 && <path d="M 3.5 12.1 A 10 10 0 0 1 20.5 12.1" />}
+                          {net.strength >= 2 && <path d="M 6 13.6 A 7 7 0 0 1 18 13.6" />}
+                          {net.strength >= 1 && <path d="M 8.5 15.1 A 4 4 0 0 1 15.5 15.1" />}
+                          {net.strength >= 1 && <circle cx="12" cy="17.1" r="1.5" fill="currentColor" stroke="none" />}
+                        </svg>
+                        <span className="text-[11.5px] text-gray-700 truncate flex-1">{net.name}</span>
+                        {net.connected && <span className="text-[10px] text-[#0078d4] flex-shrink-0">已连接</span>}
+                      </div>
+                    ))}
+                  </div>
+
+                  {!wifiOn && (
+                    <div className="mt-2 text-center text-[10.5px] text-gray-400">WLAN 已关闭</div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Volume + Slider */}
         <div className="relative">
