@@ -1,101 +1,180 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
-/* 文章数据 */
+/* 文章数据 — Topaz 人设，扩充覆盖 2026 年 2-7 月 + 2025 年 */
 type Article = {
   id: number;
+  date: string; // 'YYYY-MM-DD'
   title: string;
-  date: string;
-  excerpt: string;
   tags: string[];
+  read?: boolean;
 };
 
 const articles: Article[] = [
-  {
-    id: 1,
-    title: '从零搭建个人数字桌面',
-    date: '2026-07-08',
-    excerpt: '用 Next.js + Tailwind 模拟 Windows 桌面，记录从图标设计到窗口交互的完整开发过程。',
-    tags: ['Next.js', '前端', '设计'],
-  },
-  {
-    id: 2,
-    title: 'AI Agent 开发入门笔记',
-    date: '2026-06-25',
-    excerpt: '梳理 AI Agent 的核心概念、工具调用机制与多步推理流程，附最小可运行示例。',
-    tags: ['AI', 'Agent', '学习笔记'],
-  },
-  {
-    id: 3,
-    title: 'Vibe Coding 实践心得',
-    date: '2026-06-10',
-    excerpt: '与 AI 结对编程的节奏把控：何时放手让 AI 写、何时介入修正，以及如何写好 prompt。',
-    tags: ['AI', '工作流'],
-  },
-  {
-    id: 4,
-    title: '控制工程与机器视觉交叉记',
-    date: '2026-05-20',
-    excerpt: '工科研究生视角下，控制理论与视觉感知如何在机器人系统中协作的思考。',
-    tags: ['控制工程', '机器视觉'],
-  },
+  { id: 1, date: '2026-07-08', title: '从零搭建个人数字桌面', tags: ['Next.js', '前端'] },
+  { id: 2, date: '2026-07-03', title: '动效参数的手感', tags: ['vibe coding', '前端'] },
+  { id: 3, date: '2026-06-25', title: 'AI Agent 开发入门笔记', tags: ['AI', 'Agent'] },
+  { id: 4, date: '2026-06-10', title: 'Vibe Coding 实践心得', tags: ['AI', '工作流'] },
+  { id: 5, date: '2026-05-20', title: '控制工程与机器视觉交叉记', tags: ['控制工程', '机器视觉'] },
+  { id: 6, date: '2026-05-08', title: 'MediaPipe 手势识别初探', tags: ['机器视觉', 'MediaPipe'] },
+  { id: 7, date: '2026-04-22', title: 'PID 整定的工程直觉', tags: ['控制工程', '学习'], read: true },
+  { id: 8, date: '2026-04-10', title: '卡尔曼滤波直觉理解', tags: ['控制工程', '滤波'] },
+  { id: 9, date: '2026-03-15', title: '状态空间模型入门', tags: ['控制工程', '学习'], read: true },
+  { id: 10, date: '2026-03-02', title: 'INFJ 研究生的时间管理', tags: ['随想', '成长'] },
+  { id: 11, date: '2026-02-14', title: '从 Hexo 到 Next.js 迁移记', tags: ['博客', '部署'] },
+  { id: 12, date: '2026-02-04', title: '滤波器选型对比笔记', tags: ['滤波', '信号处理'] },
+  { id: 13, date: '2025-12-02', title: '研0入学准备', tags: ['研究生', '规划'] },
+  { id: 14, date: '2025-10-18', title: '本科毕业设计复盘', tags: ['毕设', '控制工程'], read: true },
+  { id: 15, date: '2025-07-05', title: 'C 语言指针难点梳理', tags: ['C', '学习笔记'] },
 ];
 
-function ArticleCard({ article, index }: { article: Article; index: number }) {
+type TabKey = 'day' | 'week' | 'month' | 'year' | 'category';
+
+const TABS: { key: TabKey; label: string }[] = [
+  { key: 'day', label: '日' },
+  { key: 'week', label: '周' },
+  { key: 'month', label: '月' },
+  { key: 'year', label: '年' },
+  { key: 'category', label: '分类' },
+];
+
+/* 周一为周首，算该日期所在周的周一/周日 */
+function getWeekRange(dateStr: string) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const day = (d.getDay() + 6) % 7; // 周一=0 … 周日=6
+  const monday = new Date(d);
+  monday.setDate(d.getDate() - day);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  return { monday, sunday };
+}
+
+function fmtRange(a: Date, b: Date) {
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${p(a.getMonth() + 1)}.${p(a.getDate())}-${p(b.getMonth() + 1)}.${p(b.getDate())}`;
+}
+
+function mmdd(dateStr: string) {
+  const [, m, d] = dateStr.split('-');
+  return `${m}-${d}`;
+}
+
+type Group = { key: string; title: string; items: Article[] };
+
+function computeGroups(tab: TabKey, arts: Article[]): Group[] {
+  if (tab === 'category') {
+    const map = new Map<string, Article[]>();
+    for (const a of arts) {
+      for (const t of a.tags) {
+        if (!map.has(t)) map.set(t, []);
+        map.get(t)!.push(a);
+      }
+    }
+    return Array.from(map.entries())
+      .map(([tag, items]) => ({
+        key: tag,
+        title: `#${tag}`,
+        items: items.slice().sort((x, y) => y.date.localeCompare(x.date)),
+      }))
+      .sort((a, b) => b.items.length - a.items.length);
+  }
+  const map = new Map<string, { title: string; items: Article[] }>();
+  for (const a of arts) {
+    const [y, m, d] = a.date.split('-');
+    let key = '';
+    let title = '';
+    if (tab === 'day') {
+      key = a.date;
+      title = `${Number(m)}月${Number(d)}日`;
+    } else if (tab === 'week') {
+      const { monday, sunday } = getWeekRange(a.date);
+      key = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}-${String(monday.getDate()).padStart(2, '0')}`;
+      title = fmtRange(monday, sunday);
+    } else if (tab === 'month') {
+      key = `${y}-${m}`;
+      title = `${y}年${Number(m)}月`;
+    } else {
+      key = y;
+      title = `${y}年`;
+    }
+    if (!map.has(key)) map.set(key, { title, items: [] });
+    map.get(key)!.items.push(a);
+  }
+  return Array.from(map.entries())
+    .map(([key, g]) => ({
+      key,
+      title: g.title,
+      items: g.items.slice().sort((x, y) => y.date.localeCompare(x.date)),
+    }))
+    .sort((a, b) => b.key.localeCompare(a.key));
+}
+
+const TEAL = '#0d9488';
+
+function ArticleRow({ article, isFirst }: { article: Article; isFirst: boolean }) {
+  const fs = 'clamp(11px, 1.5cqw, 13px)';
+  return (
+    <div className="flex items-center gap-2.5" style={{ padding: 'clamp(7px, 0.9cqw, 11px) 0' }}>
+      {isFirst && (
+        <span className="self-stretch rounded flex-shrink-0" style={{ width: 3, background: '#14b8a6' }} />
+      )}
+      {/* 日期 */}
+      <span
+        className="font-medium text-gray-700 tabular-nums flex-shrink-0"
+        style={{ fontSize: fs, width: 'clamp(38px, 5cqw, 50px)' }}
+      >
+        {mmdd(article.date)}
+      </span>
+      {/* 竖虚线 */}
+      <span className="self-stretch border-l border-dashed border-gray-200 flex-shrink-0" />
+      {/* 标题 + 已阅读 */}
+      <span className="text-gray-700 flex-1 min-w-0 truncate" style={{ fontSize: fs }}>
+        {article.title}
+        {article.read && <span className="text-gray-400 ml-1.5">[已阅读]</span>}
+      </span>
+      {/* 标签 */}
+      <span className="text-gray-400 ml-auto flex-shrink-0 whitespace-nowrap" style={{ fontSize: fs }}>
+        {article.tags.map((t) => `#${t}`).join('  ')}
+      </span>
+    </div>
+  );
+}
+
+function GroupCard({ group, index }: { group: Group; index: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
-      whileHover={{ scale: 1.02, transition: { duration: 0.15 } }}
-      className="bg-white rounded-2xl border border-gray-100 cursor-pointer hover:border-[#0078d4]/30 hover:shadow-md transition-colors w-full"
+      className="bg-white rounded-2xl w-full"
       style={{
-        padding: 'clamp(14px, 2cqw, 24px)',
+        padding: 'clamp(14px, 2cqw, 22px)',
         boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
       }}
     >
-      {/* 日期 */}
+      {/* header */}
       <div
-        className="text-[#0078d4] mb-2"
-        style={{ fontSize: 'clamp(11px, 1.5cqw, 13px)' }}
-      >
-        {article.date}
-      </div>
-      {/* 标题 */}
-      <h3
-        className="font-semibold text-gray-800 leading-tight mb-2"
-        style={{ fontSize: 'clamp(15px, 2.2cqw, 19px)' }}
-      >
-        {article.title}
-      </h3>
-      {/* 分隔线 */}
-      <div
-        className="mb-3"
+        className="flex items-baseline gap-2"
         style={{
-          width: 'clamp(28px, 4cqw, 40px)',
-          height: '1.5px',
-          background: 'linear-gradient(90deg, transparent, #0078d4, transparent)',
+          marginBottom: 'clamp(6px, 0.8cqw, 10px)',
+          paddingBottom: 'clamp(8px, 1cqw, 12px)',
+          borderBottom: '1px solid #f3f4f6',
         }}
-      />
-      {/* 摘要 */}
-      <p
-        className="text-gray-500 leading-snug mb-3"
-        style={{ fontSize: 'clamp(11px, 1.5cqw, 14px)' }}
       >
-        {article.excerpt}
-      </p>
-      {/* 标签 */}
-      <div className="flex flex-wrap gap-1.5">
-        {article.tags.map((tag) => (
-          <span
-            key={tag}
-            className="text-[#0078d4] bg-[#0078d4]/8 rounded-full px-2 py-0.5"
-            style={{ fontSize: 'clamp(10px, 1.3cqw, 12px)' }}
-          >
-            {tag}
-          </span>
+        <span className="font-semibold text-gray-800" style={{ fontSize: 'clamp(14px, 2cqw, 17px)' }}>
+          {group.title}
+        </span>
+        <span className="text-gray-300">•</span>
+        <span className="text-gray-400" style={{ fontSize: 'clamp(11px, 1.5cqw, 13px)' }}>
+          {group.items.length} 篇
+        </span>
+      </div>
+      {/* items */}
+      <div className="flex flex-col">
+        {group.items.map((a, i) => (
+          <ArticleRow key={a.id} article={a} isFirst={i === 0} />
         ))}
       </div>
     </motion.div>
@@ -103,6 +182,9 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
 }
 
 export default function ArticlesPage() {
+  const [activeTab, setActiveTab] = useState<TabKey>('month');
+  const groups = useMemo(() => computeGroups(activeTab, articles), [activeTab]);
+
   return (
     <div
       className="h-full w-full flex flex-col items-center overflow-y-auto"
@@ -119,7 +201,7 @@ export default function ArticlesPage() {
 
         {/* 分隔线 */}
         <div
-          className="mt-3 mb-8"
+          className="mt-3 mb-6"
           style={{
             width: 'clamp(60px, 10cqw, 90px)',
             height: '2px',
@@ -127,17 +209,46 @@ export default function ArticlesPage() {
           }}
         />
 
-        {/* 文章列表 */}
+        {/* tab 栏 */}
+        <div
+          className="flex items-center gap-1 p-1 rounded-full mb-6"
+          style={{ background: 'rgba(229,231,235,0.6)' }}
+        >
+          {TABS.map((t) => {
+            const active = t.key === activeTab;
+            return (
+              <button
+                key={t.key}
+                onClick={() => setActiveTab(t.key)}
+                className="rounded-full transition-colors"
+                style={{
+                  padding: 'clamp(5px, 0.7cqw, 7px) clamp(12px, 1.6cqw, 16px)',
+                  fontSize: 'clamp(12px, 1.6cqw, 14px)',
+                  background: active ? TEAL : 'transparent',
+                  color: active ? '#fff' : '#6b7280',
+                  fontWeight: active ? 600 : 400,
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 分组列表 */}
         <div
           className="flex flex-col w-full mx-auto"
-          style={{
-            gap: 'clamp(12px, 1.8cqw, 20px)',
-            maxWidth: '600px',
-          }}
+          style={{ gap: 'clamp(12px, 1.8cqw, 20px)', maxWidth: '600px' }}
         >
-          {articles.map((article, index) => (
-            <ArticleCard key={article.id} article={article} index={index} />
-          ))}
+          {groups.length === 0 ? (
+            <div className="text-center text-gray-400 py-10" style={{ fontSize: 'clamp(12px, 1.6cqw, 14px)' }}>
+              暂无内容
+            </div>
+          ) : (
+            groups.map((g, i) => (
+              <GroupCard key={g.key} group={g} index={i} />
+            ))
+          )}
         </div>
       </div>
 
