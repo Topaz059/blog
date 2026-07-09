@@ -9,7 +9,6 @@ type Article = {
   date: string; // 'YYYY-MM-DD'
   title: string;
   tags: string[];
-  read?: boolean;
 };
 
 const articles: Article[] = [
@@ -19,14 +18,14 @@ const articles: Article[] = [
   { id: 4, date: '2026-06-10', title: 'Vibe Coding 实践心得', tags: ['AI', '工作流'] },
   { id: 5, date: '2026-05-20', title: '控制工程与机器视觉交叉记', tags: ['控制工程', '机器视觉'] },
   { id: 6, date: '2026-05-08', title: 'MediaPipe 手势识别初探', tags: ['机器视觉', 'MediaPipe'] },
-  { id: 7, date: '2026-04-22', title: 'PID 整定的工程直觉', tags: ['控制工程', '学习'], read: true },
+  { id: 7, date: '2026-04-22', title: 'PID 整定的工程直觉', tags: ['控制工程', '学习'] },
   { id: 8, date: '2026-04-10', title: '卡尔曼滤波直觉理解', tags: ['控制工程', '滤波'] },
-  { id: 9, date: '2026-03-15', title: '状态空间模型入门', tags: ['控制工程', '学习'], read: true },
+  { id: 9, date: '2026-03-15', title: '状态空间模型入门', tags: ['控制工程', '学习'] },
   { id: 10, date: '2026-03-02', title: 'INFJ 研究生的时间管理', tags: ['随想', '成长'] },
   { id: 11, date: '2026-02-14', title: '从 Hexo 到 Next.js 迁移记', tags: ['博客', '部署'] },
   { id: 12, date: '2026-02-04', title: '滤波器选型对比笔记', tags: ['滤波', '信号处理'] },
   { id: 13, date: '2025-12-02', title: '研0入学准备', tags: ['研究生', '规划'] },
-  { id: 14, date: '2025-10-18', title: '本科毕业设计复盘', tags: ['毕设', '控制工程'], read: true },
+  { id: 14, date: '2025-10-18', title: '本科毕业设计复盘', tags: ['毕设', '控制工程'] },
   { id: 15, date: '2025-07-05', title: 'C 语言指针难点梳理', tags: ['C', '学习笔记'] },
 ];
 
@@ -111,14 +110,14 @@ function computeGroups(tab: TabKey, arts: Article[]): Group[] {
     .sort((a, b) => b.key.localeCompare(a.key));
 }
 
-const TEAL = '#0d9488';
+const ACCENT = '#0078d4';
 
 function ArticleRow({ article, isFirst }: { article: Article; isFirst: boolean }) {
   const fs = 'clamp(11px, 1.5cqw, 13px)';
   return (
     <div className="flex items-center gap-2.5" style={{ padding: 'clamp(7px, 0.9cqw, 11px) 0' }}>
       {isFirst && (
-        <span className="self-stretch rounded flex-shrink-0" style={{ width: 3, background: '#14b8a6' }} />
+        <span className="self-stretch rounded flex-shrink-0" style={{ width: 3, background: ACCENT }} />
       )}
       {/* 日期 */}
       <span
@@ -129,10 +128,9 @@ function ArticleRow({ article, isFirst }: { article: Article; isFirst: boolean }
       </span>
       {/* 竖虚线 */}
       <span className="self-stretch border-l border-dashed border-gray-200 flex-shrink-0" />
-      {/* 标题 + 已阅读 */}
+      {/* 标题 */}
       <span className="text-gray-700 flex-1 min-w-0 truncate" style={{ fontSize: fs }}>
         {article.title}
-        {article.read && <span className="text-gray-400 ml-1.5">[已阅读]</span>}
       </span>
       {/* 标签 */}
       <span className="text-gray-400 ml-auto flex-shrink-0 whitespace-nowrap" style={{ fontSize: fs }}>
@@ -224,7 +222,7 @@ export default function ArticlesPage() {
                 style={{
                   padding: 'clamp(5px, 0.7cqw, 7px) clamp(12px, 1.6cqw, 16px)',
                   fontSize: 'clamp(12px, 1.6cqw, 14px)',
-                  background: active ? TEAL : 'transparent',
+                  background: active ? ACCENT : 'transparent',
                   color: active ? '#fff' : '#6b7280',
                   fontWeight: active ? 600 : 400,
                 }}
