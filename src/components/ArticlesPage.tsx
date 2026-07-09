@@ -112,28 +112,59 @@ function computeGroups(tab: TabKey, arts: Article[]): Group[] {
 
 const ACCENT = '#0078d4';
 
-function ArticleRow({ article, isFirst }: { article: Article; isFirst: boolean }) {
+function ArticleRow({
+  article,
+  isLast,
+  hovered,
+  onHoverChange,
+}: {
+  article: Article;
+  isLast: boolean;
+  hovered: boolean;
+  onHoverChange: (hover: boolean) => void;
+}) {
   const fs = 'clamp(11px, 1.5cqw, 13px)';
   return (
-    <div className="flex items-center gap-2.5" style={{ padding: 'clamp(7px, 0.9cqw, 11px) 0' }}>
-      {isFirst && (
-        <span className="self-stretch rounded flex-shrink-0" style={{ width: 3, background: ACCENT }} />
-      )}
+    <div
+      className="flex items-stretch gap-2.5 cursor-default"
+      style={{ padding: 'clamp(7px, 0.9cqw, 11px) 0' }}
+      onMouseEnter={() => onHoverChange(true)}
+      onMouseLeave={() => onHoverChange(false)}
+    >
+      {/* 时间线节点列：圆圈 + 上下贯穿连线 */}
+      <div className="flex flex-col items-center flex-shrink-0" style={{ width: 14 }}>
+        <div className="flex-1" style={{ width: 0, borderLeft: '1px dashed #d1d5db' }} />
+        <div className="flex items-center justify-center" style={{ width: 14, height: 8, overflow: 'visible' }}>
+          <div
+            className="transition-all duration-200"
+            style={
+              hovered
+                ? { width: 4, height: 24, borderRadius: 2, background: ACCENT }
+                : { width: 8, height: 8, borderRadius: '50%', background: '#d1d5db' }
+            }
+          />
+        </div>
+        <div
+          className="flex-1"
+          style={{ width: 0, borderLeft: isLast ? 'none' : '1px dashed #d1d5db' }}
+        />
+      </div>
       {/* 日期 */}
       <span
-        className="font-medium text-gray-700 tabular-nums flex-shrink-0"
+        className="font-medium text-gray-700 tabular-nums flex-shrink-0 self-center"
         style={{ fontSize: fs, width: 'clamp(38px, 5cqw, 50px)' }}
       >
         {mmdd(article.date)}
       </span>
-      {/* 竖虚线 */}
-      <span className="self-stretch border-l border-dashed border-gray-200 flex-shrink-0" />
       {/* 标题 */}
-      <span className="text-gray-700 flex-1 min-w-0 truncate" style={{ fontSize: fs }}>
+      <span className="text-gray-700 flex-1 min-w-0 truncate self-center" style={{ fontSize: fs }}>
         {article.title}
       </span>
       {/* 标签 */}
-      <span className="text-gray-400 ml-auto flex-shrink-0 whitespace-nowrap" style={{ fontSize: fs }}>
+      <span
+        className="text-gray-400 ml-auto flex-shrink-0 whitespace-nowrap self-center"
+        style={{ fontSize: fs }}
+      >
         {article.tags.map((t) => `#${t}`).join('  ')}
       </span>
     </div>
@@ -141,6 +172,7 @@ function ArticleRow({ article, isFirst }: { article: Article; isFirst: boolean }
 }
 
 function GroupCard({ group, index }: { group: Group; index: number }) {
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -172,7 +204,13 @@ function GroupCard({ group, index }: { group: Group; index: number }) {
       {/* items */}
       <div className="flex flex-col">
         {group.items.map((a, i) => (
-          <ArticleRow key={a.id} article={a} isFirst={i === 0} />
+          <ArticleRow
+            key={a.id}
+            article={a}
+            isLast={i === group.items.length - 1}
+            hovered={hoveredId === a.id}
+            onHoverChange={(h) => setHoveredId(h ? a.id : null)}
+          />
         ))}
       </div>
     </motion.div>
