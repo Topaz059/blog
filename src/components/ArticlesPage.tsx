@@ -282,7 +282,7 @@ export default function ArticlesPage() {
         {/* 分组列表 */}
         <div
           className="flex flex-col w-full mx-auto"
-          style={{ gap: 'clamp(12px, 1.8cqw, 20px)', maxWidth: '600px' }}
+          style={{ gap: 'clamp(12px, 1.8cqw, 20px)', maxWidth: '800px' }}
         >
           {groups.length === 0 ? (
             <div className="text-center text-gray-400 py-10" style={{ fontSize: 'clamp(12px, 1.6cqw, 14px)' }}>
