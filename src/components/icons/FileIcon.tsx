@@ -309,28 +309,27 @@ export const AboutIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
-// Essay icon - fountain pen (斜置钢笔: 深蓝笔身 + 金尖 + 墨滴)
-// Right-column visual language: solid brand color + concrete object + dimensional detail
-// Distinct from ArticleIcon (white document page) by object shape and color
+// Essay icon - open diary/journal (打开的日记本: 双页+装订+横线)
+// Diary motif for "随笔" (personal journal entries)
+// Distinct from ArticleIcon (single document page) by spread double-page + center binding
 export const EssayIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <g transform="rotate(45 24 24)">
-      {/* nib (gold triangular tip) */}
-      <path d="M24 42 L20 33 L28 33 Z" fill="#d4a843" stroke="#9a7320" strokeWidth="0.8" strokeLinejoin="round" />
-      <line x1="24" y1="42" x2="24" y2="33" stroke="#9a7320" strokeWidth="0.6" />
-      {/* gold ring (ferrule) */}
-      <rect x="19.5" y="30.5" width="9" height="2.5" fill="#d4a843" stroke="#9a7320" strokeWidth="0.6" />
-      {/* barrel (deep blue body) */}
-      <rect x="20" y="14" width="8" height="17" rx="3" fill="#3a7bc8" stroke="#2a5a9a" strokeWidth="0.8" />
-      {/* highlight */}
-      <rect x="22" y="15" width="1.5" height="15" rx="0.75" fill="white" opacity="0.4" />
-      {/* cap */}
-      <rect x="18.5" y="7" width="11" height="8" rx="2.5" fill="#2a3a4c" stroke="#1a2a3c" strokeWidth="0.8" />
-      {/* cap top */}
-      <rect x="20" y="5" width="8" height="3.5" rx="1.75" fill="#2a3a4c" stroke="#1a2a3c" strokeWidth="0.8" />
-      {/* ink drop */}
-      <circle cx="24" cy="43.5" r="1.3" fill="#4a90d9" />
-    </g>
+    {/* left page */}
+    <path d="M24 12 L8 14 L8 38 L24 36 Z" fill="white" stroke="#888" strokeWidth="1.3" strokeLinejoin="round" />
+    {/* right page */}
+    <path d="M24 12 L40 14 L40 38 L24 36 Z" fill="white" stroke="#888" strokeWidth="1.3" strokeLinejoin="round" />
+    {/* binding (center spine) */}
+    <path d="M24 12 L24 36" stroke="#666" strokeWidth="1.5" />
+    {/* left page ruled lines */}
+    <line x1="11" y1="19" x2="21" y2="18.5" stroke="#a8c2dc" strokeWidth="1" />
+    <line x1="11" y1="24" x2="21" y2="23.5" stroke="#a8c2dc" strokeWidth="1" />
+    <line x1="11" y1="29" x2="21" y2="28.5" stroke="#a8c2dc" strokeWidth="1" />
+    <line x1="11" y1="34" x2="19" y2="33.5" stroke="#a8c2dc" strokeWidth="1" />
+    {/* right page ruled lines */}
+    <line x1="27" y1="18.5" x2="37" y2="19" stroke="#a8c2dc" strokeWidth="1" />
+    <line x1="27" y1="23.5" x2="37" y2="24" stroke="#a8c2dc" strokeWidth="1" />
+    <line x1="27" y1="28.5" x2="37" y2="29" stroke="#a8c2dc" strokeWidth="1" />
+    <line x1="29" y1="33.5" x2="37" y2="34" stroke="#a8c2dc" strokeWidth="1" />
   </svg>
 );
 
