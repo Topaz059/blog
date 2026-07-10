@@ -361,9 +361,10 @@ const mdComponents: Components = {
             style={oneLight}
             customStyle={{
               margin: 0,
-              borderRadius: 12,
+              borderRadius: 10,
               padding: '16px 18px',
-              background: '#f8fafc',
+              background: '#f1f5f9',
+              border: '1px solid #e2e8f0',
               fontSize: 'clamp(12px, 1.8cqw, 14px)',
               lineHeight: 1.6,
               overflowX: 'auto',
