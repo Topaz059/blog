@@ -4,6 +4,8 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 /* 随笔数据 */
 type Essay = {
@@ -329,9 +331,49 @@ const mdComponents: Components = {
     </a>
   ),
   code: ({ className, children }) => {
-    const isBlock = /language-/.test(className ?? '');
+    const text = String(children ?? '').replace(/\n$/, '');
+    const match = /language-(\w+)/.exec(className ?? '');
+    const lang = match?.[1];
+    const isBlock = !!lang || text.includes('\n');
     if (isBlock) {
-      return <code className={className}>{children}</code>;
+      const label = lang || '';
+      return (
+        <div style={{ position: 'relative', margin: '16px 0' }}>
+          {label && (
+            <span
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 14,
+                fontSize: 11,
+                lineHeight: 1,
+                color: '#94a3b8',
+                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+                letterSpacing: '0.04em',
+                userSelect: 'none',
+              }}
+            >
+              {label}
+            </span>
+          )}
+          <SyntaxHighlighter
+            language={lang ?? 'text'}
+            style={oneLight}
+            customStyle={{
+              margin: 0,
+              borderRadius: 12,
+              padding: '16px 18px',
+              background: '#f8fafc',
+              fontSize: 'clamp(12px, 1.8cqw, 14px)',
+              lineHeight: 1.6,
+              overflowX: 'auto',
+            }}
+            codeTagProps={{ style: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' } }}
+          >
+            {text}
+          </SyntaxHighlighter>
+        </div>
+      );
     }
     return (
       <code className="bg-gray-100 text-gray-700 rounded px-1.5 py-0.5" style={{ fontSize: '0.9em' }}>
@@ -339,14 +381,7 @@ const mdComponents: Components = {
       </code>
     );
   },
-  pre: ({ children }) => (
-    <pre
-      className="bg-gray-900 text-gray-100 rounded-xl p-4 my-4 overflow-x-auto"
-      style={{ fontSize: 'clamp(12px, 1.8cqw, 14px)', lineHeight: 1.6 }}
-    >
-      {children}
-    </pre>
-  ),
+  pre: ({ children }) => <>{children}</>,
   blockquote: ({ children }) => (
     <blockquote className="border-l-2 border-gray-200 pl-4 my-4 text-gray-500 italic">
       {children}
