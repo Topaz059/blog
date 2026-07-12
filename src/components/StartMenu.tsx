@@ -63,7 +63,7 @@ export default function StartMenu({ onClose, onOpen }: StartMenuProps) {
   return (
     <motion.div
       ref={menuRef}
-      className="fixed bottom-[38px] left-0 z-50 rounded-t-lg shadow-2xl border border-gray-300 overflow-hidden flex flex-col"
+      className="fixed bottom-[38px] left-1 z-50 rounded-lg shadow-2xl border border-gray-300 overflow-hidden flex flex-col"
       style={{
         width: '440px',
         height: '460px',
