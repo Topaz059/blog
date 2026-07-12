@@ -139,10 +139,15 @@ export default function StartMenu({ onClose, onOpen }: StartMenuProps) {
 
       {/* 底部用户区 */}
       <div className="flex items-center justify-between px-3 h-12 border-t border-gray-200 bg-black/5 flex-shrink-0">
-        <div className="flex items-center gap-2 min-w-0">
+        <button
+          type="button"
+          onClick={() => { onOpen('pricing'); onClose(); }}
+          className="flex items-center gap-2 min-w-0 rounded-md px-1 -mx-1 hover:bg-black/10 transition-colors cursor-pointer"
+          title="查看关于"
+        >
           <img src="/touxiang.jpg" alt="Topaz Blog" className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
           <span className="text-xs font-medium text-gray-700 truncate">Topaz Blog</span>
-        </div>
+        </button>
         <button
           className="flex items-center justify-center w-8 h-8 rounded hover:bg-black/10 transition-colors flex-shrink-0"
           title="电源"
