@@ -149,7 +149,7 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setIsSearchFocused(false)}
-            placeholder="Type here to search"
+            placeholder="搜索"
             className="bg-transparent outline-none text-gray-700 placeholder-gray-400 w-28"
           />
         </div>

@@ -86,7 +86,7 @@ export default function StartMenu({ onClose, onOpen }: StartMenuProps) {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="搜索应用或文件"
+            placeholder="搜索应用"
             className="bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400 flex-1 min-w-0"
             autoFocus
           />
