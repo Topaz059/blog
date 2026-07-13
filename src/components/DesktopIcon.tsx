@@ -7,6 +7,7 @@ import {
   FileIcon, FolderIcon, TrashIcon, ArticleIcon, AboutIcon,
   DemoIcon, DocsIcon, EmailIcon, QuestionIcon,
   BilibiliIcon, ThisPCIcon, EssayIcon, FriendLinkIcon, GitHubIcon,
+  XiaohongshuIcon,
 } from './icons';
 
 export const iconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
@@ -25,6 +26,7 @@ export const iconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = 
   changelog: BilibiliIcon,
   handbook: ThisPCIcon,
   trash: TrashIcon,
+  xiaohongshu: XiaohongshuIcon,
 };
 
 interface DesktopIconProps {

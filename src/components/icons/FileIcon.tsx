@@ -333,6 +333,25 @@ export const EssayIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
+// Xiaohongshu (小红书 / RED) icon - 官方原版 App 图标
+// 直接引用 public/xiaohongshu.png（取自苹果 App Store 官方应用图标，红底白字「小红书」）
+// eslint-disable-next-line @next/next/no-img-element
+export const XiaohongshuIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <img
+    src="/xiaohongshu.png"
+    alt="小红书"
+    className={props.className}
+    style={{
+      objectFit: 'contain',
+      borderRadius: '22%',
+      boxShadow: '0 2px 8px rgba(255, 36, 66, 0.35)',
+      transform: 'scale(0.9)',
+      transformOrigin: 'center',
+    }}
+    draggable={false}
+  />
+);
+
 // FriendLink icon - business card stack (名片堆: 存放朋友网站地址)
 // Right-column visual language: concrete object + layered depth (echoes ThisPC/Trash)
 // Distinct from ArticleIcon (single document) by stacked cards + avatar motif

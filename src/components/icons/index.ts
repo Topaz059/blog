@@ -25,4 +25,5 @@ export {
   AboutIcon,
   EssayIcon,
   FriendLinkIcon,
+  XiaohongshuIcon,
 } from './FileIcon';
