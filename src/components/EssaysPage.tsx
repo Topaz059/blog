@@ -1,140 +1,12 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
-/* 随笔数据 */
-type Essay = {
-  id: number;
-  date: string;
-  title: string;
-  content: string;
-  markdown?: string;
-  tags: string[];
-};
-
-const AI_NOTES_MD = `# 1. 机器学习
-机器学习就是从数据中获得规律，通过人对规律进行标注，然后人将这个规律写成一套算法，使算法能够准确判断或识别出对应物体。
-
-# 2. 深度学习
-深度学习在机器学习的基础上，不需要人对规律进行总结，其内部会将输入的数据总结、分析规律、形成一套算法，从而识别或判断出对应物体。
-
-![机器学习vs深度学习](/ml-vs-dl.png)
-
-# 3. 神经网络
-机器模拟人类大脑神经元工作的一种算法，input输入经过多层参数线性运算的叠加，最终得到一个output输出，下图为简单的三层神经网络的模型。
-
-![神经网络模型](/neural-network.png)
-
-# 4. 大语言模型(LLM)
-大语言模型是深度学习领域专门设计用于自然语言处理领域特殊的深度神经网络。规模大，训练数据大，算力大，参数规模大，故称之为大语言模型。`;
-
-const PYTHON_REVIEW_MD = `# print函数
-### print(values, sep=" ", end="\\n", file=None, flush=False)
-- sep内赋值的内容将作为每个元素输出的间隔符。
-- end内赋值的内容将作为value结束末尾的换行。
-- file内可选择对文件的打开方式。常见有r：只读。w：只写。a：追加。添加+表示允许读写。
-- flush可选True和False两种选择，True代表每运行一步屏幕就立刻显示一步，False则是最后一起在屏幕显示出来。
-# 格式化输出
-### 格式化字符
-- %c：字符
-- %s：字符串
-- %d：十进制整数
-- %f：浮点数
-### 格式化输出模板
-### 基本格式化输出：使用%
-\`\`\`python
-
-print('我的名字是%s，年龄是%d岁' % ("01", 18))
-
-\`\`\`
-#### format()格式化输出
-\`\`\`python
-
-print("我的名字是：{}，年龄为：{}岁".format("01", 18))
-
-\`\`\`
-#### f表达式格式化输出(常用)
-\`\`\`python
-
-name, age = "01", 18
-
-print(f"名字是{name}，今年{age}岁")
-
-\`\`\`
-# 对象
-### python对象的三要素
-  - \`id\`：对象的唯一标识符。
-  - \`type\`：对象的类型。
-  - \`value\`：对象的值。
-# input函数
-可以自己输入需要的元素，默认以字符串形式返回，但可使用int以及其他类型进行强制转换。
-\`\`\`python
-a=int(input("请输入"))
-print(a)
-\`\`\``;
-
-const WORLD_MODEL_MD = `# 世界模型
-### 广义世界模型
-能够预测之后会发生什么的模型都可以被称之为广义世界模型。
-- LLM能够预测下一个Token，例如：智谱GLM5.2、Claude code Sonnet4.8等。
-- 视频生成模型可以预测下一帧的画面，例如：豆包Seedance2.5、即梦等。
-### 狭义世界模型(action-conditioned)
-必须以动作为条件，强调在动作之后世界会发生的变化。
-# 世界模型的三种功能性类型
-### 渲染器
-渲染器主要做的是输出观察到的信息，可以以图片或者视频的格式进行输出，例如：文生视频模型Sora(已下架)、交互式生成系统RTFM(Real-Time Frame Model)等都属于渲染器。
-### 模拟器
-模拟器的职责是输出世界本来的状态，需要遵循物理、几何、动力学的规律，追求极致真实，遵从牛顿定理，符合因果规律。常见的模拟器：Dreamer系列。
-### 规划器
-当给定了观察和目标后，规划器输出动作。与渲染器相反，渲染器主要是把动作转化为观察；规划期主要是把观察转化为动作。常见的规划器：VLA(Vision-Language-Action)。
-### 逻辑闭环过程
-输入真实情况→规划器决定动作→模拟器推演后果→渲染器画出预测的画面→对比误差修正下一轮输入。
-# RTFM与JEPA的对立
-两种路线的对立本质上是以Yann LeCun为代表提出的、与当前主流生成式AI截然不同的一条通往“世界模型”和自主智能的技术路径。
-
-| 对比维度     | **RTFM路线**    | **JEPA式路线**     |
-| -------- | ------------- | --------------- |
-| **输出**   | 直接生成2D像素图片/视频 | 输出抽象的特征向量       |
-| **目标**   | 看起来真实的画面      | 理解真实的物理规律       |
-| **计算负担** | 重             | 轻               |
-| **适用情况** | 适合展示结果、给人看    | 适合内部规划、给AI自己推理用 |`;
-
-const essays: Essay[] = [
-  { id: 2, date: '2026-07-03', title: '滤波器与 PID 是一对', content: '控制课上讲 PID 整定，突然反应过来：滤波器和 PID 其实是一对，前者收拾信号，后者收拾误差。机器视觉里这俩谁也躲不掉，算是把专业课串起来了。', tags: ['控制工程', '学习'] },
-  { id: 3, date: '2026-06-22', title: '最小可运行 Agent 跑通了', content: '跟着教程搭了个最小可运行的 Agent，工具调用跑通的那一刻有点上头。下一步想接 MediaPipe，让它真的"看得见"——这才对得起"机器视觉"这个方向。', tags: ['AI Agent', 'MediaPipe'] },
-  { id: 4, date: '2026-06-12', title: 'INFJ 的试错方式', content: 'INFJ 的苦恼：方案没想清楚前不想开口，可 vibe coding 又要求快速试错。和解的办法是——先在代码里试，试完再讲。代码不撒谎，比口头推演省事。', tags: ['随想'] },
-  { id: 5, date: '2026-06-01', title: '博客迁到 Next.js', content: '把博客从 Hexo 迁到 Next.js，折腾了一整个周末。静态导出 + Cloudflare Pages，零成本上线，研究生钱包友好。绿点也保住了，值。', tags: ['博客', '部署'] },
-  {
-    id: 6,
-    date: '2026-07-09',
-    title: 'AI 概念学习笔记',
-    content: '机器学习、深度学习、神经网络和大语言模型的概念梳理——从数据中获得规律，到不需要人工标注规律，再到模拟大脑神经元结构。',
-    markdown: AI_NOTES_MD,
-    tags: ['AI', '学习笔记'],
-  },
-  {
-    id: 7,
-    date: '2026-07-10',
-    title: 'Python 语法回顾',
-    content: '温习 Python 基础：print 函数的参数、三种字符串格式化方式（% / format / f-string）、对象三要素与 input 函数。',
-    markdown: PYTHON_REVIEW_MD,
-    tags: ['Python', '学习笔记'],
-  },
-  {
-    id: 8,
-    date: '2026-07-12',
-    title: '世界模型笔记',
-    content:
-      '能预测未来的模型都算世界模型：广义（预测下一个 token/帧）vs 狭义（以动作为条件）。三类功能性角色——渲染器、模拟器、规划器，以及 RTFM 与 JEPA 两条技术路线的对立。',
-    markdown: WORLD_MODEL_MD,
-    tags: ['AI', '世界模型', '学习笔记'],
-  },
-];
+import { essays, type Essay } from '@/lib/essaysData';
 
 type TabKey = 'day' | 'week' | 'month' | 'year' | 'category';
 
@@ -508,11 +380,26 @@ function EssayDetailView({ essay, onBack }: { essay: Essay; onBack: () => void }
   );
 }
 
-export default function EssaysPage() {
+interface EssaysPageProps {
+  /** 由外部（如任务栏搜索）指定要打开的随笔 id，设置后会自动进入该随笔详情 */
+  focusEssayId?: number | null;
+  /** focusEssayId 被消费后的回调，外部用以清空焦点 */
+  onFocusConsumed?: () => void;
+}
+
+export default function EssaysPage({ focusEssayId, onFocusConsumed }: EssaysPageProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('month');
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const groups = useMemo(() => computeGroups(activeTab, essays), [activeTab]);
   const selectedEssay = essays.find((e) => e.id === selectedId);
+
+  // 外部深链：搜索点击随笔后，直接进入该随笔详情
+  useEffect(() => {
+    if (focusEssayId != null) {
+      setSelectedId(focusEssayId);
+      onFocusConsumed?.();
+    }
+  }, [focusEssayId, onFocusConsumed]);
 
   return (
     <div className="h-full w-full" style={{ background: '#fbfbfb' }}>

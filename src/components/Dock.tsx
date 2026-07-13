@@ -4,7 +4,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { iconMap } from './DesktopIcon';
 import { leftIcons } from '@/lib/constants';
+import { articles } from '@/lib/articlesData';
+import { essays } from '@/lib/essaysData';
 import StartMenu from './StartMenu';
+
+type SearchResult =
+  | { kind: 'app'; id: string; label: string }
+  | { kind: 'article'; id: number; title: string }
+  | { kind: 'essay'; id: number; title: string };
 
 interface TaskbarProps {
   openWindows: string[];
@@ -12,9 +19,11 @@ interface TaskbarProps {
   onTaskbarClick: (id: string) => void;
   getIconLabel: (id: string) => string;
   onOpen: (id: string) => void;
+  onOpenArticle: (articleId: number) => void;
+  onOpenEssay: (essayId: number) => void;
 }
 
-export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick, getIconLabel, onOpen }: TaskbarProps) {
+export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick, getIconLabel, onOpen, onOpenArticle, onOpenEssay }: TaskbarProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -31,8 +40,21 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
   const [wifiOn, setWifiOn] = useState(true);
   const wifiRef = useRef<HTMLDivElement>(null);
 
-  const searchResults = searchQuery
-    ? leftIcons.filter(icon => icon.label.includes(searchQuery))
+  // 搜索范围：应用图标 + 文章标题 + 随笔标题（仅按名字匹配，不含正文）
+  const searchResults: SearchResult[] = searchQuery
+    ? (() => {
+        const q = searchQuery.toLowerCase();
+        const apps: SearchResult[] = leftIcons
+          .filter(icon => icon.label.toLowerCase().includes(q))
+          .map(icon => ({ kind: 'app' as const, id: icon.id, label: icon.label }));
+        const arts: SearchResult[] = articles
+          .filter(a => a.title.toLowerCase().includes(q))
+          .map(a => ({ kind: 'article' as const, id: a.id, title: a.title }));
+        const ess: SearchResult[] = essays
+          .filter(e => e.title.toLowerCase().includes(q))
+          .map(e => ({ kind: 'essay' as const, id: e.id, title: e.title }));
+        return [...apps, ...arts, ...ess];
+      })()
     : [];
 
   const [now, setNow] = useState(new Date());
@@ -155,23 +177,29 @@ export default function Taskbar({ openWindows, minimizedWindows, onTaskbarClick,
         </div>
         {/* 搜索结果下拉列表（向上弹出） */}
         {isSearchFocused && searchQuery && (
-          <div className="absolute bottom-full left-0 mb-2 bg-white rounded-md shadow-lg border border-gray-200 py-1 min-w-[180px] z-50">
+          <div className="absolute bottom-full left-0 mb-2 bg-white rounded-md shadow-lg border border-gray-200 py-1 min-w-[220px] max-h-[320px] overflow-y-auto z-50">
             {searchResults.length > 0 ? (
-              searchResults.map(icon => {
-                const Icon = iconMap[icon.id];
+              searchResults.map(r => {
+                const iconId = r.kind === 'app' ? r.id : r.kind === 'article' ? 'signup' : 'product-os';
+                const Icon = iconMap[iconId];
+                const title = r.kind === 'app' ? r.label : r.title;
+                const badge = r.kind === 'article' ? '文章' : r.kind === 'essay' ? '随笔' : null;
                 return (
                   <button
-                    key={icon.id}
+                    key={`${r.kind}-${r.id}`}
                     onMouseDown={(e) => {
                       e.preventDefault();
-                      onOpen(icon.id);
+                      if (r.kind === 'app') onOpen(r.id);
+                      else if (r.kind === 'article') onOpenArticle(r.id);
+                      else onOpenEssay(r.id);
                       setSearchQuery('');
                       setIsSearchFocused(false);
                     }}
                     className="flex items-center gap-2 w-full px-3 py-2 hover:bg-blue-50 transition-colors text-left"
                   >
-                    {Icon && <Icon className="w-4 h-4" />}
-                    <span className="text-xs text-gray-700">{icon.label}</span>
+                    {Icon && <Icon className="w-4 h-4 flex-shrink-0" />}
+                    <span className="text-xs text-gray-700 truncate flex-1">{title}</span>
+                    {badge && <span className="text-[10px] text-gray-400 flex-shrink-0">{badge}</span>}
                   </button>
                 );
               })

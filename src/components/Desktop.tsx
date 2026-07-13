@@ -26,6 +26,8 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
   const [openWindows, setOpenWindows] = useState<string[]>([]);
   const [minimizedWindows, setMinimizedWindows] = useState<string[]>([]);
   const [maximizedWindows, setMaximizedWindows] = useState<string[]>([]);
+  // 任务栏搜索点击随笔后，用来通知随笔窗口进入对应详情的焦点 id
+  const [essayFocusId, setEssayFocusId] = useState<number | null>(null);
 
   const handleIconOpen = useCallback((id: string) => {
     setSelectedId(id);
@@ -41,6 +43,20 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
   useImperativeHandle(ref, () => ({
     openIcon: handleIconOpen,
   }), [handleIconOpen]);
+
+  // 任务栏搜索：打开文章（文章暂无详情视图，直接打开文章列表窗口）
+  const handleOpenArticle = useCallback(() => {
+    handleIconOpen('signup');
+  }, [handleIconOpen]);
+
+  // 任务栏搜索：打开随笔并深链到对应随笔详情
+  const handleOpenEssay = useCallback((essayId: number) => {
+    setOpenWindows((prev) => (prev.includes('product-os') ? prev : [...prev, 'product-os']));
+    setMinimizedWindows((prev) => prev.filter((w) => w !== 'product-os'));
+    setEssayFocusId(essayId);
+  }, []);
+
+  const clearEssayFocus = useCallback(() => setEssayFocusId(null), []);
 
   const closeWindow = useCallback((id: string) => {
     setOpenWindows((prev) => prev.filter((w) => w !== id));
@@ -288,7 +304,7 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
               ) : windowId === 'signup' ? (
                 <ArticlesPage />
               ) : windowId === 'product-os' ? (
-                <EssaysPage />
+                <EssaysPage focusEssayId={essayFocusId} onFocusConsumed={clearEssayFocus} />
               ) : windowId === 'switch-mode' ? (
                 <ProjectsPage />
               ) : (
@@ -309,6 +325,8 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
         onTaskbarClick={handleTaskbarClick}
         getIconLabel={getIconLabel}
         onOpen={handleIconOpen}
+        onOpenArticle={handleOpenArticle}
+        onOpenEssay={handleOpenEssay}
       />
     </div>
   );
