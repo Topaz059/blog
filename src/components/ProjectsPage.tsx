@@ -1,7 +1,9 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Markdown, ACCENT } from '@/lib/markdownComponents';
+import { ARTICLES_MARKDOWN } from '@/lib/articlesContent';
 
 /* 项目数据 */
 type Project = {
@@ -10,6 +12,7 @@ type Project = {
   date: string;
   content: string;
   tags: string[];
+  markdown?: string; // 正文（Markdown 字符串），有则可点击打开详情（与随笔一致）
 };
 
 const projects: Project[] = [
@@ -19,6 +22,8 @@ const projects: Project[] = [
     date: '2026-07-13',
     content: '从 0 到 1 搭建的个人博客网站，做成可点图标、开窗口的桌面形态而非传统文档站。Next.js 14 静态导出 + Cloudflare Pages 零成本上线，文章/随笔/项目/友链都是独立窗口模块。窗口拖拽、Dock 动效、Markdown 渲染全手写，源码开源到 GitHub。',
     tags: ['Next.js', '静态部署', '前端'],
+    // 复用已有的「从零搭建个人数字桌面」文章内容作为详情正文
+    markdown: ARTICLES_MARKDOWN[1],
   },
   {
     id: 1,
@@ -57,18 +62,36 @@ const projects: Project[] = [
   },
 ];
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({
+  project,
+  index,
+  hovered,
+  onHoverChange,
+  onSelect,
+}: {
+  project: Project;
+  index: number;
+  hovered: boolean;
+  onHoverChange: (hover: boolean) => void;
+  onSelect: (id: number) => void;
+}) {
+  const clickable = !!project.markdown;
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
-      whileHover={{ scale: 1.02, transition: { duration: 0.15 } }}
-      className="bg-white rounded-2xl border border-gray-100 cursor-default hover:border-[#0078d4]/30 hover:shadow-md transition-colors w-full"
+      whileHover={{ scale: clickable ? 1.02 : 1, transition: { duration: 0.15 } }}
+      className={`bg-white rounded-2xl border border-gray-100 transition-colors w-full ${
+        clickable ? 'cursor-pointer hover:border-[#0078d4]/30 hover:shadow-md' : 'cursor-default'
+      }`}
       style={{
         padding: 'clamp(14px, 2cqw, 24px)',
         boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
       }}
+      onMouseEnter={() => onHoverChange(true)}
+      onMouseLeave={() => onHoverChange(false)}
+      onClick={clickable ? () => onSelect(project.id) : undefined}
     >
       {/* 日期 */}
       <div
@@ -78,12 +101,18 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         {project.date}
       </div>
       {/* 标题 */}
-      <h3
-        className="font-semibold text-gray-800 leading-tight mb-2"
-        style={{ fontSize: 'clamp(15px, 2.2cqw, 19px)' }}
-      >
-        {project.title}
-      </h3>
+      <div className="flex items-center gap-1.5">
+        <h3
+          className="font-semibold text-gray-800 leading-tight mb-2 transition-colors"
+          style={{
+            fontSize: 'clamp(15px, 2.2cqw, 19px)',
+            color: clickable && hovered ? ACCENT : undefined,
+          }}
+        >
+          {project.title}
+        </h3>
+        {clickable && <span className="text-gray-300 mb-2">›</span>}
+      </div>
       {/* 分隔线 */}
       <div
         className="mb-3"
@@ -116,52 +145,135 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   );
 }
 
-export default function ProjectsPage() {
+function ProjectDetailView({ project, onBack }: { project: Project; onBack: () => void }) {
   return (
-    <div
-      className="h-full w-full flex flex-col items-center overflow-y-auto"
-      style={{ background: '#fbfbfb' }}
-    >
-      <div className="flex-1 flex flex-col items-center w-full px-8 pt-10 pb-6" style={{ containerType: 'inline-size' }}>
-        {/* 标题 */}
-        <h2
-          className="font-semibold text-gray-800"
-          style={{ fontSize: 'clamp(20px, 3.4cqw, 28px)' }}
+    <div className="h-full w-full overflow-y-auto" style={{ background: '#fbfbfb' }}>
+      <div className="mx-auto px-8 pt-8 pb-10" style={{ maxWidth: '800px', containerType: 'inline-size' }}>
+        {/* 返回按钮 */}
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1 text-gray-500 hover:text-[#0078d4] transition-colors mb-6"
+          style={{ fontSize: 'clamp(12px, 1.6cqw, 14px)' }}
         >
-          项目
-        </h2>
-
+          ← 返回
+        </button>
+        {/* 日期 */}
+        <div className="text-[#0078d4] mb-2" style={{ fontSize: 'clamp(12px, 1.6cqw, 14px)' }}>
+          {project.date}
+        </div>
+        {/* 标题 */}
+        <h1
+          className="font-semibold text-gray-800 mb-3"
+          style={{ fontSize: 'clamp(22px, 3.4cqw, 30px)' }}
+        >
+          {project.title}
+        </h1>
         {/* 分隔线 */}
         <div
-          className="mt-3 mb-8"
+          className="mb-6"
           style={{
             width: 'clamp(60px, 10cqw, 90px)',
             height: '2px',
             background: 'linear-gradient(90deg, transparent, #0078d4, transparent)',
           }}
         />
-
-        {/* 项目列表 */}
-        <div
-          className="flex flex-col w-full mx-auto"
-          style={{
-            gap: 'clamp(12px, 1.8cqw, 20px)',
-            maxWidth: '800px',
-          }}
-        >
-          {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+        {/* Markdown 正文 */}
+        {project.markdown && <Markdown>{project.markdown}</Markdown>}
+        {/* 标签 */}
+        <div className="flex flex-wrap gap-2 mt-8 pt-4" style={{ borderTop: '1px solid #f3f4f6' }}>
+          {project.tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-[#0078d4] bg-[#0078d4]/8 rounded-full px-2.5 py-1"
+              style={{ fontSize: 'clamp(11px, 1.4cqw, 13px)' }}
+            >
+              #{tag}
+            </span>
           ))}
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* 底部签名 */}
-      <div
-        className="w-full text-center py-3 text-gray-400 flex-shrink-0"
-        style={{ fontSize: 'clamp(10px, 1.4cqw, 12px)' }}
-      >
-        © 2026 Topaz · 我做过的事和一些比赛经历
-      </div>
+export default function ProjectsPage() {
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const selectedProject = projects.find((p) => p.id === selectedId);
+
+  return (
+    <div className="h-full w-full" style={{ background: '#fbfbfb' }}>
+      <AnimatePresence mode="wait">
+        {selectedProject ? (
+          <motion.div
+            key="detail"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25 }}
+            className="h-full"
+          >
+            <ProjectDetailView project={selectedProject} onBack={() => setSelectedId(null)} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="list"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="h-full w-full flex flex-col items-center overflow-y-auto"
+          >
+            <div className="flex-1 flex flex-col items-center w-full px-8 pt-10 pb-6" style={{ containerType: 'inline-size' }}>
+              {/* 标题 */}
+              <h2
+                className="font-semibold text-gray-800"
+                style={{ fontSize: 'clamp(20px, 3.4cqw, 28px)' }}
+              >
+                项目
+              </h2>
+
+              {/* 分隔线 */}
+              <div
+                className="mt-3 mb-8"
+                style={{
+                  width: 'clamp(60px, 10cqw, 90px)',
+                  height: '2px',
+                  background: 'linear-gradient(90deg, transparent, #0078d4, transparent)',
+                }}
+              />
+
+              {/* 项目列表 */}
+              <div
+                className="flex flex-col w-full mx-auto"
+                style={{
+                  gap: 'clamp(12px, 1.8cqw, 20px)',
+                  maxWidth: '800px',
+                }}
+              >
+                {projects.map((project, index) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    index={index}
+                    hovered={hoveredId === project.id}
+                    onHoverChange={(h) => setHoveredId(h ? project.id : null)}
+                    onSelect={setSelectedId}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* 底部签名 */}
+            <div
+              className="w-full text-center py-3 text-gray-400 flex-shrink-0"
+              style={{ fontSize: 'clamp(10px, 1.4cqw, 12px)' }}
+            >
+              © 2026 Topaz · 我做过的事和一些比赛经历
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
