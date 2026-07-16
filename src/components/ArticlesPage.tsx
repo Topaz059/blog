@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { articles, type Article } from '@/lib/articlesData';
+import { Markdown } from '@/lib/markdownComponents';
 
 type TabKey = 'day' | 'week' | 'month' | 'year' | 'category';
 
@@ -92,19 +93,23 @@ function ArticleRow({
   isLast,
   hovered,
   onHoverChange,
+  onSelect,
 }: {
   article: Article;
   isLast: boolean;
   hovered: boolean;
   onHoverChange: (hover: boolean) => void;
+  onSelect?: () => void;
 }) {
+  const clickable = !!article.markdown;
   const fs = 'clamp(11px, 1.5cqw, 13px)';
   return (
     <div
-      className="flex items-stretch gap-2.5 cursor-default"
+      className={`flex items-stretch gap-2.5 ${clickable ? 'cursor-pointer' : 'cursor-default'}`}
       style={{ padding: 'clamp(7px, 0.9cqw, 11px) 0' }}
       onMouseEnter={() => onHoverChange(true)}
       onMouseLeave={() => onHoverChange(false)}
+      onClick={clickable ? onSelect : undefined}
     >
       {/* 时间线节点列：圆圈 + 上下贯穿连线 */}
       <div className="flex flex-col items-center flex-shrink-0" style={{ width: 14 }}>
@@ -142,6 +147,7 @@ function ArticleRow({
         }}
       >
         {article.title}
+        {clickable && <span className="text-gray-300 ml-1.5">›</span>}
       </span>
       {/* 标签 */}
       <span
@@ -154,7 +160,7 @@ function ArticleRow({
   );
 }
 
-function GroupCard({ group, index }: { group: Group; index: number }) {
+function GroupCard({ group, index, onSelect }: { group: Group; index: number; onSelect: (id: number) => void }) {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   return (
     <motion.div
@@ -193,6 +199,7 @@ function GroupCard({ group, index }: { group: Group; index: number }) {
             isLast={i === group.items.length - 1}
             hovered={hoveredId === a.id}
             onHoverChange={(h) => setHoveredId(h ? a.id : null)}
+            onSelect={() => onSelect(a.id)}
           />
         ))}
       </div>
@@ -200,84 +207,173 @@ function GroupCard({ group, index }: { group: Group; index: number }) {
   );
 }
 
-export default function ArticlesPage() {
-  const [activeTab, setActiveTab] = useState<TabKey>('month');
-  const groups = useMemo(() => computeGroups(activeTab, articles), [activeTab]);
-
+function ArticleDetailView({ article, onBack }: { article: Article; onBack: () => void }) {
   return (
-    <div
-      className="h-full w-full flex flex-col items-center overflow-y-auto"
-      style={{ background: '#fbfbfb' }}
-    >
-      <div className="flex-1 flex flex-col items-center w-full px-8 pt-10 pb-6" style={{ containerType: 'inline-size' }}>
-        {/* 标题 */}
-        <h2
-          className="font-semibold text-gray-800"
-          style={{ fontSize: 'clamp(20px, 3.4cqw, 28px)' }}
+    <div className="h-full w-full overflow-y-auto" style={{ background: '#fbfbfb' }}>
+      <div className="mx-auto px-8 pt-8 pb-10" style={{ maxWidth: '800px', containerType: 'inline-size' }}>
+        {/* 返回按钮 */}
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1 text-gray-500 hover:text-[#0078d4] transition-colors mb-6"
+          style={{ fontSize: 'clamp(12px, 1.6cqw, 14px)' }}
         >
-          文章
-        </h2>
-
+          ← 返回
+        </button>
+        {/* 日期 */}
+        <div className="text-[#0078d4] mb-2" style={{ fontSize: 'clamp(12px, 1.6cqw, 14px)' }}>
+          {article.date}
+        </div>
+        {/* 标题 */}
+        <h1
+          className="font-semibold text-gray-800 mb-3"
+          style={{ fontSize: 'clamp(22px, 3.4cqw, 30px)' }}
+        >
+          {article.title}
+        </h1>
         {/* 分隔线 */}
         <div
-          className="mt-3 mb-6"
+          className="mb-6"
           style={{
             width: 'clamp(60px, 10cqw, 90px)',
             height: '2px',
             background: 'linear-gradient(90deg, transparent, #0078d4, transparent)',
           }}
         />
+        {/* Markdown 正文 */}
+        {article.markdown && <Markdown>{article.markdown}</Markdown>}
+        {/* 标签 */}
+        <div className="flex flex-wrap gap-2 mt-8 pt-4" style={{ borderTop: '1px solid #f3f4f6' }}>
+          {article.tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-[#0078d4] bg-[#0078d4]/8 rounded-full px-2.5 py-1"
+              style={{ fontSize: 'clamp(11px, 1.4cqw, 13px)' }}
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-        {/* tab 栏 */}
-        <div
-          className="flex items-center gap-1 p-1 rounded-full mb-6"
-          style={{ background: 'rgba(229,231,235,0.6)' }}
-        >
-          {TABS.map((t) => {
-            const active = t.key === activeTab;
-            return (
-              <button
-                key={t.key}
-                onClick={() => setActiveTab(t.key)}
-                className="rounded-full transition-colors"
-                style={{
-                  padding: 'clamp(5px, 0.7cqw, 7px) clamp(12px, 1.6cqw, 16px)',
-                  fontSize: 'clamp(12px, 1.6cqw, 14px)',
-                  background: active ? ACCENT : 'transparent',
-                  color: active ? '#fff' : '#6b7280',
-                  fontWeight: active ? 600 : 400,
-                }}
+interface ArticlesPageProps {
+  /** 由外部（如任务栏搜索）指定要打开的文章 id，设置后会自动进入该文章详情 */
+  focusArticleId?: number | null;
+  /** focusArticleId 被消费后的回调，外部用以清空焦点 */
+  onFocusConsumed?: () => void;
+}
+
+export default function ArticlesPage({ focusArticleId, onFocusConsumed }: ArticlesPageProps) {
+  const [activeTab, setActiveTab] = useState<TabKey>('month');
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const groups = useMemo(() => computeGroups(activeTab, articles), [activeTab]);
+  const selectedArticle = articles.find((a) => a.id === selectedId);
+
+  // 外部深链：搜索点击文章后，直接进入该文章详情
+  useEffect(() => {
+    if (focusArticleId != null) {
+      setSelectedId(focusArticleId);
+      onFocusConsumed?.();
+    }
+  }, [focusArticleId, onFocusConsumed]);
+
+  return (
+    <div className="h-full w-full" style={{ background: '#fbfbfb' }}>
+      <AnimatePresence mode="wait">
+        {selectedArticle ? (
+          <motion.div
+            key="detail"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25 }}
+            className="h-full"
+          >
+            <ArticleDetailView article={selectedArticle} onBack={() => setSelectedId(null)} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="list"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="h-full w-full flex flex-col items-center overflow-y-auto"
+          >
+            <div className="flex-1 flex flex-col items-center w-full px-8 pt-10 pb-6" style={{ containerType: 'inline-size' }}>
+              {/* 标题 */}
+              <h2
+                className="font-semibold text-gray-800"
+                style={{ fontSize: 'clamp(20px, 3.4cqw, 28px)' }}
               >
-                {t.label}
-              </button>
-            );
-          })}
-        </div>
+                文章
+              </h2>
 
-        {/* 分组列表 */}
-        <div
-          className="flex flex-col w-full mx-auto"
-          style={{ gap: 'clamp(12px, 1.8cqw, 20px)', maxWidth: '800px' }}
-        >
-          {groups.length === 0 ? (
-            <div className="text-center text-gray-400 py-10" style={{ fontSize: 'clamp(12px, 1.6cqw, 14px)' }}>
-              暂无内容
+              {/* 分隔线 */}
+              <div
+                className="mt-3 mb-6"
+                style={{
+                  width: 'clamp(60px, 10cqw, 90px)',
+                  height: '2px',
+                  background: 'linear-gradient(90deg, transparent, #0078d4, transparent)',
+                }}
+              />
+
+              {/* tab 栏 */}
+              <div
+                className="flex items-center gap-1 p-1 rounded-full mb-6"
+                style={{ background: 'rgba(229,231,235,0.6)' }}
+              >
+                {TABS.map((t) => {
+                  const active = t.key === activeTab;
+                  return (
+                    <button
+                      key={t.key}
+                      onClick={() => setActiveTab(t.key)}
+                      className="rounded-full transition-colors"
+                      style={{
+                        padding: 'clamp(5px, 0.7cqw, 7px) clamp(12px, 1.6cqw, 16px)',
+                        fontSize: 'clamp(12px, 1.6cqw, 14px)',
+                        background: active ? ACCENT : 'transparent',
+                        color: active ? '#fff' : '#6b7280',
+                        fontWeight: active ? 600 : 400,
+                      }}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 分组列表 */}
+              <div
+                className="flex flex-col w-full mx-auto"
+                style={{ gap: 'clamp(12px, 1.8cqw, 20px)', maxWidth: '800px' }}
+              >
+                {groups.length === 0 ? (
+                  <div className="text-center text-gray-400 py-10" style={{ fontSize: 'clamp(12px, 1.6cqw, 14px)' }}>
+                    暂无内容
+                  </div>
+                ) : (
+                  groups.map((g, i) => (
+                    <GroupCard key={g.key} group={g} index={i} onSelect={setSelectedId} />
+                  ))
+                )}
+              </div>
             </div>
-          ) : (
-            groups.map((g, i) => (
-              <GroupCard key={g.key} group={g} index={i} />
-            ))
-          )}
-        </div>
-      </div>
 
-      {/* 底部签名 */}
-      <div
-        className="w-full text-center py-3 text-gray-400 flex-shrink-0"
-        style={{ fontSize: 'clamp(10px, 1.4cqw, 12px)' }}
-      >
-        © 2026 Topaz · 分享一些心得和感悟
-      </div>
+            {/* 底部签名 */}
+            <div
+              className="w-full text-center py-3 text-gray-400 flex-shrink-0"
+              style={{ fontSize: 'clamp(10px, 1.4cqw, 12px)' }}
+            >
+              © 2026 Topaz · 分享一些心得和感悟
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

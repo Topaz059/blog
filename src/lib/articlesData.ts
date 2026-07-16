@@ -1,13 +1,16 @@
 /* 文章数据 — Topaz 人设，扩充覆盖 2026 年 2-7 月 + 2025 年 */
+import { ARTICLES_MARKDOWN } from './articlesContent';
+
 export type Article = {
   id: number;
   date: string; // 'YYYY-MM-DD'
   title: string;
   tags: string[];
+  markdown?: string; // 正文（Markdown 字符串），有则文章列表可点击打开详情
 };
 
 export const articles: Article[] = [
-  { id: 1, date: '2026-07-08', title: '从零搭建个人数字桌面', tags: ['Next.js', '前端'] },
+  { id: 1, date: '2026-07-13', title: '从零搭建个人数字桌面', tags: ['Next.js', '前端'], markdown: ARTICLES_MARKDOWN[1] },
   { id: 2, date: '2026-07-03', title: '动效参数的手感', tags: ['vibe coding', '前端'] },
   { id: 3, date: '2026-06-25', title: 'AI Agent 开发入门笔记', tags: ['AI', 'Agent'] },
   { id: 4, date: '2026-06-10', title: 'Vibe Coding 实践心得', tags: ['AI', '工作流'] },

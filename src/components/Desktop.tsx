@@ -30,6 +30,8 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
   // 任务栏搜索点击随笔后，用来通知随笔窗口进入对应详情的焦点 id
   const [essayFocusId, setEssayFocusId] = useState<number | null>(null);
+  // 任务栏搜索点击文章后，用来通知文章窗口进入对应详情的焦点 id
+  const [articleFocusId, setArticleFocusId] = useState<number | null>(null);
 
   const handleIconOpen = useCallback((id: string) => {
     setSelectedId(id);
@@ -47,10 +49,13 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
     openIcon: handleIconOpen,
   }), [handleIconOpen]);
 
-  // 任务栏搜索：打开文章（文章暂无详情视图，直接打开文章列表窗口）
-  const handleOpenArticle = useCallback(() => {
-    handleIconOpen('signup');
-  }, [handleIconOpen]);
+  // 任务栏搜索：打开文章并深链到对应文章详情（无 id 时仅打开列表窗口）
+  const handleOpenArticle = useCallback((articleId?: number) => {
+    setOpenWindows((prev) => (prev.includes('signup') ? prev : [...prev, 'signup']));
+    setMinimizedWindows((prev) => prev.filter((w) => w !== 'signup'));
+    setActiveWindow('signup');
+    if (articleId != null) setArticleFocusId(articleId);
+  }, []);
 
   // 任务栏搜索：打开随笔并深链到对应随笔详情
   const handleOpenEssay = useCallback((essayId: number) => {
@@ -61,6 +66,7 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
   }, []);
 
   const clearEssayFocus = useCallback(() => setEssayFocusId(null), []);
+  const clearArticleFocus = useCallback(() => setArticleFocusId(null), []);
 
   const closeWindow = useCallback((id: string) => {
     setOpenWindows((prev) => prev.filter((w) => w !== id));
@@ -316,7 +322,7 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
               ) : windowId === 'pricing' ? (
                 <AboutPage />
               ) : windowId === 'signup' ? (
-                <ArticlesPage />
+                <ArticlesPage focusArticleId={articleFocusId} onFocusConsumed={clearArticleFocus} />
               ) : windowId === 'product-os' ? (
                 <EssaysPage focusEssayId={essayFocusId} onFocusConsumed={clearEssayFocus} />
               ) : windowId === 'switch-mode' ? (
