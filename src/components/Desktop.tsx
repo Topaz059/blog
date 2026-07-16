@@ -14,6 +14,7 @@ import EssaysPage from './EssaysPage';
 import ProjectsPage from './ProjectsPage';
 import { iconMap } from './DesktopIcon';
 import VideoParallaxBackground from './VideoParallaxBackground';
+import { ParallaxProvider, ParallaxBackground } from './parallax';
 import { leftIcons, rightIcons } from '@/lib/constants';
 
 const allIcons = [...leftIcons, ...rightIcons];
@@ -177,10 +178,14 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
 
   return (
     <div className="fixed inset-0 top-10 pb-9 overflow-hidden" style={{ backgroundColor: '#1a1a2e' }}>
-      {/* Video background with mouse parallax */}
-      <VideoParallaxBackground />
+      <ParallaxProvider>
+        {/* Video background with mouse parallax */}
+        <VideoParallaxBackground />
 
-      {/* Center Illustration removed */}
+        {/* Wallpaper Engine 风格鼠标视差叠加图层（视频之上、图标之下） */}
+        <ParallaxBackground />
+
+        {/* Center Illustration removed */}
 
       {/* Left side: main column + social column (GitHub / Bilibili / 小红书) */}
       <div className="absolute left-4 md:left-6 top-2 z-20 flex flex-row gap-0 md:gap-1 items-start">
@@ -339,6 +344,7 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
         onOpenArticle={handleOpenArticle}
         onOpenEssay={handleOpenEssay}
       />
+      </ParallaxProvider>
     </div>
   );
 });
