@@ -61,7 +61,7 @@ export default function VideoParallaxBackground() {
       }}
     >
       <source
-        src="https://github.com/Topaz059/blog/releases/download/v1.0.0/bizhi.mp4"
+        src="/yasuo.mp4"
         type="video/mp4"
       />
     </motion.video>
