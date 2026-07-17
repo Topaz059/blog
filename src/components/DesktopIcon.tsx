@@ -67,8 +67,8 @@ export default function DesktopIcon({ icon, isSelected, onOpen }: DesktopIconPro
       </motion.div>
       <span
         className={`icon-label text-xs text-center leading-tight max-w-full break-words ${
-          isSelected 
-            ? 'text-blue-400' 
+          isSelected
+            ? 'text-blue-400'
             : 'text-white'
         }`}
         style={{

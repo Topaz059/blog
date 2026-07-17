@@ -3,6 +3,7 @@
 import React, { useState, useCallback, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DesktopIcon from './DesktopIcon';
+import DesktopRipple from './DesktopRipple';
 import Dock from './Dock'; // Windows-style taskbar
 import FriendsLinkPage from './FriendsLinkPage';
 import EmailPage from './EmailPage';
@@ -344,6 +345,9 @@ const Desktop = forwardRef<DesktopHandle>((_props, ref) => {
         onOpenArticle={handleOpenArticle}
         onOpenEssay={handleOpenEssay}
       />
+
+      {/* 桌面点击波纹层（窗口内不触发） */}
+      <DesktopRipple />
       </ParallaxProvider>
     </div>
   );

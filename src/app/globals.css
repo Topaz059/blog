@@ -81,3 +81,30 @@ body {
 .friends-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(76, 175, 80, 0.5);
 }
+
+/* 桌面点击波纹：以鼠标为圆心向外扩散，最大处凝成蓝色圆框，再淡出 */
+@keyframes icon-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.9;
+    background-color: rgba(59, 130, 246, 0.4);
+  }
+  45% {
+    width: 70px;
+    height: 70px;
+    opacity: 0.95;
+    background-color: rgba(59, 130, 246, 0);
+  }
+  100% {
+    width: 70px;
+    height: 70px;
+    opacity: 0;
+    background-color: rgba(59, 130, 246, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ripple-layer [style*="icon-ripple"] {
+    animation: none !important;
+  }
+}
