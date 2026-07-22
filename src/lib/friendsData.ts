@@ -10,6 +10,7 @@ export const friendsData: FriendLink[] = [
   { id: 1, name: 'Topaz', url: 'https://blog-topaz.pages.dev/', description: 'hello！欢迎找我添加友链', avatar: '/touxiang.jpg' },
   { id: 2, name: 'Chiba', url: 'http://fasit.ngamesart.com.cn', description: '一个自学游戏开发的独立开发者博客，记录 Unity3D 与虚幻5 的学习历程。', avatar: '/chiba-avatar.webp' },
   { id: 3, name: '啊诶', url: 'http://blog.t1an.online/', description: 'T1an 的个人博客，记录前端工程化、全栈开发与 Go、AI 应用实践。', avatar: '/t1an-avatar.webp' },
+  { id: 4, name: 'yuil', url: 'https://blog.yuilicarus.com/', description: "Hello, I'm Yuil. 在这里分享技术、ACG等内容", avatar: '/yuil-avatar.png' },
 ];
 
 const avatarGradients: string[] = [
