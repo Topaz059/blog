@@ -179,13 +179,13 @@ export default function AboutPage() {
           >
             <div
               className="font-semibold text-[#0078d4] leading-none whitespace-nowrap"
-              style={{ fontSize: 'clamp(15px, 2.8cqw, 22px)' }}
+              style={{ fontSize: 'clamp(15px, 2.8cqw, 22px)', marginTop: '4px' }}
             >
               {uptime.days}天 {uptime.hours}时 {uptime.minutes}分 {uptime.seconds}秒
             </div>
             <div
-              className="text-gray-500 mt-1.5"
-              style={{ fontSize: 'clamp(11px, 1.8cqw, 13px)' }}
+              className="text-gray-500"
+              style={{ fontSize: 'clamp(11px, 1.8cqw, 13px)', marginTop: '7px' }}
             >
               运行时间
             </div>
